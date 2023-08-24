@@ -4,7 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "BaseCharacter.h"
+#include "InputActionValue.h"
 #include "BasePlayer.generated.h"
+
+class UInputAction;
 
 /**
  * 
@@ -34,6 +37,26 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
+protected: 
+	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	class UInputMappingContext* BipedalMappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* ActionMove;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* ActionJump;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* ActionLook;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	UInputAction* ActionInteract;
+
+	void Move(const FInputActionValue& value);
+
 private:
 	
 };

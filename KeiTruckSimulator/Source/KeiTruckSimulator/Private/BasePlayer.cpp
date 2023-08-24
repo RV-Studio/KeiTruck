@@ -3,6 +3,8 @@
 
 #include "BasePlayer.h"
 #include "Camera/CameraComponent.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 
 ABasePlayer::ABasePlayer() {
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
@@ -13,32 +15,58 @@ ABasePlayer::ABasePlayer() {
 	CameraRotation = 0;
 }
 
+void ABasePlayer::BeginPlay() {
+	Super::BeginPlay();
+
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController) {
+		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+		if (Subsystem) {
+			Subsystem->AddMappingContext(BipedalMappingContext, 0);
+		}
+	}
+
+}
+
 void ABasePlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAxis("Forward", this, &ABasePlayer::MoveForward);
-	PlayerInputComponent->BindAxis("Right", this, &ABasePlayer::MoveRight);
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
+		EnhancedInputComponent->BindAction(ActionMove, ETriggerEvent::Triggered, this, &ABasePlayer::Move);
+		EnhancedInputComponent->BindAction(ActionJump, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+		 
+	}
+
+
+
+
+
+	/*PlayerInputComponent->BindAxis("Forward", this, &ABasePlayer::MoveForward);
+	PlayerInputComponent->BindAxis("Right", this, &ABasePlayer::MoveRight);*/
 
 	PlayerInputComponent->BindAxis("TurnTo", this, &APawn::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &ABasePlayer::LookUp);
 
-	PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ACharacter::Jump);
+	//PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ACharacter::Jump);
 }
 
-void ABasePlayer::MoveForward(float Speed) {
+void ABasePlayer::Move(const FInputActionValue& value) {
+	
+	FVector2D currentValue = value.Get<FVector2D>();
+
+	// Forward Direction
 	FRotator ControlRotation = GetControlRotation();
 	FRotator MakeRotation(0, ControlRotation.Yaw, 0);
 
 	FVector Direction = FRotationMatrix(MakeRotation).GetScaledAxis(EAxis::X);
-	AddMovementInput(Direction, Speed);
-}
+	AddMovementInput(Direction, currentValue.Y);
 
-void ABasePlayer::MoveRight(float Speed) {
-	FRotator ControlRotation = GetControlRotation();
-	FRotator MakeRotation(0, ControlRotation.Yaw, 0);
+	//Sideways Direction
+	ControlRotation = GetControlRotation();
+	FRotator MakeRotation2(0, ControlRotation.Yaw, 0);
 
-	FVector Direction = FRotationMatrix(MakeRotation).GetScaledAxis(EAxis::Y);
-	AddMovementInput(Direction, Speed);
+	Direction = FRotationMatrix(MakeRotation2).GetScaledAxis(EAxis::Y);
+	AddMovementInput(Direction, currentValue.X);
 }
 
 void ABasePlayer::LookUp(float Speed) {
