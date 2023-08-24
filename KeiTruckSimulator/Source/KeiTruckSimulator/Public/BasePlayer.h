@@ -26,12 +26,6 @@ public:
 		float CameraRotation;
 
 	UFUNCTION(BlueprintCallable)
-		void MoveForward(float Speed);
-
-	UFUNCTION(BlueprintCallable)
-		void MoveRight(float Speed);
-
-	UFUNCTION(BlueprintCallable)
 		void LookUp(float Speed);
 
 
