@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Interactable.h"
 
 ABasePlayer::ABasePlayer() {
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
@@ -34,20 +35,19 @@ void ABasePlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
 		EnhancedInputComponent->BindAction(ActionMove, ETriggerEvent::Triggered, this, &ABasePlayer::Move);
 		EnhancedInputComponent->BindAction(ActionJump, ETriggerEvent::Triggered, this, &ACharacter::Jump);
-		 
+		EnhancedInputComponent->BindAction(ActionLook, ETriggerEvent::Triggered, this, &ABasePlayer::LookAround);
+		EnhancedInputComponent->BindAction(ActionInteract, ETriggerEvent::Triggered, this, &ABasePlayer::Interact);
 	}
+}
 
+void ABasePlayer::Interact(const FInputActionValue& value) {
+	if (interactableObject) {
+		interactableObject->Interact();
+	}
+}
 
-
-
-
-	/*PlayerInputComponent->BindAxis("Forward", this, &ABasePlayer::MoveForward);
-	PlayerInputComponent->BindAxis("Right", this, &ABasePlayer::MoveRight);*/
-
-	PlayerInputComponent->BindAxis("TurnTo", this, &APawn::AddControllerYawInput);
-	PlayerInputComponent->BindAxis("LookUp", this, &ABasePlayer::LookUp);
-
-	//PlayerInputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ACharacter::Jump);
+void ABasePlayer::SetInteracble(AInteractable* interactable) {
+	interactableObject = interactable;
 }
 
 void ABasePlayer::Move(const FInputActionValue& value) {
@@ -67,6 +67,14 @@ void ABasePlayer::Move(const FInputActionValue& value) {
 
 	Direction = FRotationMatrix(MakeRotation2).GetScaledAxis(EAxis::Y);
 	AddMovementInput(Direction, currentValue.X);
+}
+
+void ABasePlayer::LookAround(const FInputActionValue& value) {
+	FVector2D currentValue = value.Get<FVector2D>();
+
+	AddControllerYawInput(currentValue.X);
+
+	LookUp(currentValue.Y);
 }
 
 void ABasePlayer::LookUp(float Speed) {

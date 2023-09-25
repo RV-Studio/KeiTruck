@@ -49,7 +49,20 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	UInputAction* ActionInteract;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Interact)
+	class AInteractable* interactableObject;
+
+	UFUNCTION(BlueprintCallable)
+	void SetInteracble(AInteractable* interactable);
+
+	UFUNCTION(BlueprintCallable)
 	void Move(const FInputActionValue& value);
+
+	UFUNCTION(BlueprintCallable)
+	void LookAround(const FInputActionValue& value);
+
+	UFUNCTION(BlueprintCallable)
+	void Interact(const FInputActionValue& value);
 
 private:
 	
