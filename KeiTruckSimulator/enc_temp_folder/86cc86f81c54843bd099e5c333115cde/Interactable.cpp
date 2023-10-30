@@ -69,7 +69,7 @@ void AInteractable::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 }
 
 void AInteractable::Interact() {
-	UE_LOG(LogTemp, Warning, TEXT("Interacted"));
+
 }
 
 void AInteractable::IsInteractable(FVector playerPos) {

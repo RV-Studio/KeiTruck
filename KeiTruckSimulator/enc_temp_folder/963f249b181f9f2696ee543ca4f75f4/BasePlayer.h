@@ -29,7 +29,7 @@ public:
 		void LookUp(float Speed);
 
 	UFUNCTION(BlueprintCallable)
-	void SetInteractable(AInteractable* interactable);
+	void SetInteracble(AInteractable* interactable);
 
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
