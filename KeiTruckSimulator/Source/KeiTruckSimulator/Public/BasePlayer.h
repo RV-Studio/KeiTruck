@@ -28,6 +28,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void LookUp(float Speed);
 
+	UFUNCTION(BlueprintCallable)
+	void SetInteracble(AInteractable* interactable);
+
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
@@ -51,9 +54,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Interact)
 	class AInteractable* interactableObject;
-
-	UFUNCTION(BlueprintCallable)
-	void SetInteracble(AInteractable* interactable);
 
 	UFUNCTION(BlueprintCallable)
 	void Move(const FInputActionValue& value);

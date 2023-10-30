@@ -19,11 +19,17 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component|TextRender")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
 	class UTextRenderComponent* TextRenderer;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
 	class UStaticMeshComponent* Rotator;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
+	class UBoxComponent* Box;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
+	class UStaticMeshComponent* Cube;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool interactable;

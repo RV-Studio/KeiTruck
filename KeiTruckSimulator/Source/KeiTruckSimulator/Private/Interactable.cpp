@@ -4,6 +4,7 @@
 #include "Interactable.h"
 #include "Components/TextRenderComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/BoxComponent.h"
 
 // Sets default values
 AInteractable::AInteractable()
@@ -11,13 +12,22 @@ AInteractable::AInteractable()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
+	Box->SetupAttachment(RootComponent);
+
+	Cube = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cube"));
+	Cube->SetupAttachment(Box);
+
 	Rotator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Rotator"));
-	Rotator->SetupAttachment(RootComponent);
+	Rotator->SetupAttachment(Box);
 	Rotator->SetRelativeLocation(FVector(0, 0, 40));
 
 	TextRenderer = CreateDefaultSubobject<UTextRenderComponent>(TEXT("TextRenderer"));
 	TextRenderer->SetupAttachment(Rotator);
-	TextRenderer->SetRelativeLocation(FVector(70, 30, 30));
+	TextRenderer->SetRelativeLocation(FVector(70, 0, 30));
+
+	TextRenderer->SetText(FText::FromString(TEXT("Press \"F\" to Interact")));
+	TextRenderer->SetHorizontalAlignment(EHorizTextAligment::EHTA_Center);
 
 	TextRenderer->SetVisibility(false, true);
 }
