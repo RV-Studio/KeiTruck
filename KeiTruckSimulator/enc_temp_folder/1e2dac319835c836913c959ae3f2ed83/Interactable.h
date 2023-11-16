@@ -37,9 +37,6 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float interactionTimer;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	class ABasePlayer* player;
-
 	FVector Cross(FVector v1, FVector v2);
 
 	FVector Normalize(FVector v);
@@ -52,7 +49,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void Interact(ABasePlayer* _player);
+	virtual void Interact();
 
 	UFUNCTION(BlueprintCallable)
 	void IsInteractable(FVector playerPos);

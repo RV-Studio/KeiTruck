@@ -42,7 +42,7 @@ void ABasePlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
 
 void ABasePlayer::Interact(const FInputActionValue& value) {
 	if (interactableObject) {
-		interactableObject->Interact();
+		interactableObject->Interact(this);
 	}
 }
 

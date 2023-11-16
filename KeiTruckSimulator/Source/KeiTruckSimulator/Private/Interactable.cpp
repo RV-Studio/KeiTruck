@@ -13,6 +13,7 @@ AInteractable::AInteractable()
 	PrimaryActorTick.bCanEverTick = true;
 
 	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
+	Box->SetCollisionProfileName(FName("Pawn"));
 	Box->SetupAttachment(RootComponent);
 
 	Cube = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cube"));
@@ -68,7 +69,8 @@ void AInteractable::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 }
 
-void AInteractable::Interact() {
+void AInteractable::Interact(ABasePlayer* _player) {
+	player = _player;
 	UE_LOG(LogTemp, Warning, TEXT("Interacted"));
 }
 

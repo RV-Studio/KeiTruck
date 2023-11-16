@@ -46,7 +46,7 @@ void ABasePlayer::Interact(const FInputActionValue& value) {
 	}
 }
 
-void ABasePlayer::SetInteracble(AInteractable* interactable) {
+void ABasePlayer::SetInteractable(AInteractable* interactable) {
 	interactableObject = interactable;
 }
 
