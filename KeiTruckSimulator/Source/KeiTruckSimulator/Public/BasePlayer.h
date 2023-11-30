@@ -28,7 +28,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void SetInteractable(AInteractable* interactable);
 
-
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 protected: 

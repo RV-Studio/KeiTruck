@@ -19,6 +19,14 @@ AKeiTruckController::AKeiTruckController() {
 
 void AKeiTruckController::BeginPlay() {
 	Super::BeginPlay();
+
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController) {
+		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+		if (Subsystem) {
+			Subsystem->AddMappingContext(KeiMappingContext, 0);
+		}
+	}
 }
 
 void AKeiTruckController::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) {
@@ -33,11 +41,10 @@ void AKeiTruckController::Interact(ABasePlayer* _player) {
 	Super::Interact(_player);
 	_player->GetController()->Possess(this);
 
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	APlayerController* PlayerController = Cast<APlayerController>(_player->GetController());
 	if (PlayerController) {
 		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 		if (Subsystem) {
-			Subsystem->ClearAllMappings();
 			Subsystem->AddMappingContext(KeiMappingContext, 0);
 		}
 	}
@@ -45,5 +52,6 @@ void AKeiTruckController::Interact(ABasePlayer* _player) {
 
 void AKeiTruckController::Move(const FInputActionValue& value) {
 	
-	UE_LOG(LogTemp, Warning, TEXT("Hello World"));
+	int x = 5;
+	x += 5;
 }

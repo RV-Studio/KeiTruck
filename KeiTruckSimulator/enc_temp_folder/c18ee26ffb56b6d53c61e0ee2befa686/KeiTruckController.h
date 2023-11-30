@@ -17,12 +17,25 @@ class KEITRUCKSIMULATOR_API AKeiTruckController : public AInteractable
 	AKeiTruckController();
 
 public:
-	virtual void Interact() override;
+	virtual void Interact(ABasePlayer* _player) override;
+
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 protected:
+	virtual void BeginPlay() override;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component|Camera")
 		class UCameraComponent* Camera;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		float CameraRotation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+		class UInputMappingContext* KeiMappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+		class UInputAction* ActionMove;
+
+	UFUNCTION(BlueprintCallable)
+		void Move(const FInputActionValue& value);
 	
 };
