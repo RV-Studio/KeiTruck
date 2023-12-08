@@ -26,11 +26,7 @@ public:
 		float CameraRotation;
 
 	UFUNCTION(BlueprintCallable)
-		void LookUp(float Speed);
-
-	UFUNCTION(BlueprintCallable)
-	void SetInteractable(AInteractable* interactable);
-
+		void SetInteractable(UObject* interactable);
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
@@ -38,31 +34,33 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	class UInputMappingContext* BipedalMappingContext;
+		class UInputMappingContext* BipedalMappingContext;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* ActionMove;
+		UInputAction* ActionMove;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* ActionJump;
+		UInputAction* ActionJump;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* ActionLook;
+		UInputAction* ActionLook;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	UInputAction* ActionInteract;
+		UInputAction* ActionInteract;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Interact)
-	class AInteractable* interactableObject;
+	class IInteractableInterface* interactableObject;
 
 	UFUNCTION(BlueprintCallable)
-	void Move(const FInputActionValue& value);
+		void Move(const FInputActionValue& value);
 
 	UFUNCTION(BlueprintCallable)
-	void LookAround(const FInputActionValue& value);
+		void LookAround(const FInputActionValue& value);
 
 	UFUNCTION(BlueprintCallable)
-	void Interact(const FInputActionValue& value);
+		void LookUp(float Speed);
+
+	UFUNCTION(BlueprintCallable)
+		void Interact(const FInputActionValue& value);
 
 private:
 	

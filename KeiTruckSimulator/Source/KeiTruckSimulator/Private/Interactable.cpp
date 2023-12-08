@@ -4,6 +4,7 @@
 #include "Interactable.h"
 #include "Components/TextRenderComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "MathLibrary.h"
 #include "Components/BoxComponent.h"
 
 // Sets default values
@@ -13,6 +14,7 @@ AInteractable::AInteractable()
 	PrimaryActorTick.bCanEverTick = true;
 
 	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
+	Box->SetCollisionProfileName(FName("Pawn"));
 	Box->SetupAttachment(RootComponent);
 
 	Cube = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cube"));
@@ -39,21 +41,6 @@ void AInteractable::BeginPlay()
 	
 }
 
-FVector AInteractable::Cross(FVector v1, FVector v2) {
-	float x = (v1.Y * v2.Z) - (v1.Z * v2.Y);
-	float y = (v1.Z * v2.X) - (v1.X * v2.Z);
-	float z = (v1.X * v2.Y) - (v1.Y * v2.X);
-	return FVector(x, y, z);
-}
-
-FVector AInteractable::Normalize(FVector v) {
-	float length = sqrtf((v.X * v.X) + (v.Y * v.Y) + (v.Z * v.Z));
-	float x = v.X / length;
-	float y = v.Y / length;
-	float z = v.Z / length;
-	return FVector(x, y, z);
-}
-
 // Called every frame
 void AInteractable::Tick(float DeltaTime)
 {
@@ -68,27 +55,17 @@ void AInteractable::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 
 }
 
-void AInteractable::Interact() {
+void AInteractable::Interact(ABasePlayer* _player) {
+	player = _player;
 	UE_LOG(LogTemp, Warning, TEXT("Interacted"));
 }
 
-void AInteractable::IsInteractable(FVector playerPos) {
-	Rotator->SetWorldRotation(LookAt(Rotator->GetComponentLocation(), playerPos));
+void AInteractable::SetInteractability(bool _interactability, FVector playerPos) {
+	if (_interactability) {
+		Rotator->SetWorldRotation(MathLibrary::LookAt(Rotator->GetComponentLocation(), playerPos));
+	}
 
-	TextRenderer->SetVisibility(true, true);
+	TextRenderer->SetVisibility(_interactability, true);
 }
 
-void AInteractable::IsNotInteractable() {
-	TextRenderer->SetVisibility(false, true);
-}
-
-FRotator AInteractable::LookAt(FVector eye, FVector center) {
-	FVector X = Normalize(center - eye);
-	FVector Y = Normalize(Cross(FVector(0, 0, 1), X));
-	FVector Z = Normalize(Cross(X, Y));
-
-	FMatrix RotMatrix(X, Y, Z, FVector::ZeroVector);
-
-	return RotMatrix.Rotator();
-}
 

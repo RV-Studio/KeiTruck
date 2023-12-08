@@ -4,16 +4,28 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "InteractableInterface.h"
 #include "Interactable.generated.h"
 
 UCLASS()
-class KEITRUCKSIMULATOR_API AInteractable : public APawn
+class KEITRUCKSIMULATOR_API AInteractable : public APawn, public IInteractableInterface
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this pawn's properties
 	AInteractable();
+
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void Interact(ABasePlayer* _player) override;
+
+	virtual void SetInteractability(bool _interactability, FVector playerPos = FVector(0, 0, 0)) override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -32,32 +44,11 @@ protected:
 	class UStaticMeshComponent* Cube;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	bool interactable;
+	class ABasePlayer* player;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	float interactionTimer;
-
-	FVector Cross(FVector v1, FVector v2);
-
-	FVector Normalize(FVector v);
+	
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	UFUNCTION(BlueprintCallable)
-	void Interact();
-
-	UFUNCTION(BlueprintCallable)
-	void IsInteractable(FVector playerPos);
-
-	UFUNCTION(BlueprintCallable)
-	void IsNotInteractable();
-
-	UFUNCTION(BlueprintCallable)
-	FRotator LookAt(FVector eye, FVector center);
+	
 
 };

@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "EventDispatcherHolder.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEventDispatcherInteractable, AInteractable*, InteractableObject);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEventDispatcherInteractable, UObject*, InteractableObject);
 
 UCLASS()
 class KEITRUCKSIMULATOR_API AEventDispatcherHolder : public AActor

@@ -28,12 +28,12 @@ protected:
 		FVector HitEndPoint;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		float InteractionDistance;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		class AInteractable* InteractableObject;
+
+		class IInteractableInterface* InteractableObject;
 
 public:
 	UFUNCTION()
-		void SetInteractable(AInteractable* interactable);
+		void SetInteractable(UObject* interactable);
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 		void GetLinePoints(FVector& _StartPoint, FVector& _EndPoint);
 	UFUNCTION()

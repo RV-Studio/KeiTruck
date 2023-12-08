@@ -42,12 +42,12 @@ void ABasePlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
 
 void ABasePlayer::Interact(const FInputActionValue& value) {
 	if (interactableObject) {
-		interactableObject->Interact();
+		interactableObject->Interact(this);
 	}
 }
 
-void ABasePlayer::SetInteractable(AInteractable* interactable) {
-	interactableObject = interactable;
+void ABasePlayer::SetInteractable(UObject* interactable) {
+	interactableObject = Cast< IInteractableInterface>(interactable);
 }
 
 void ABasePlayer::Move(const FInputActionValue& value) {
