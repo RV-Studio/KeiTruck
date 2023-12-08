@@ -26,7 +26,7 @@ public:
 		float CameraRotation;
 
 	UFUNCTION(BlueprintCallable)
-		void SetInteractable(AInteractable* interactable);
+		void SetInteractable(UObject* interactable);
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
@@ -48,8 +48,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 		UInputAction* ActionInteract;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Interact)
-		class AInteractable* interactableObject;
+	class IInteractableInterface* interactableObject;
 
 	UFUNCTION(BlueprintCallable)
 		void Move(const FInputActionValue& value);

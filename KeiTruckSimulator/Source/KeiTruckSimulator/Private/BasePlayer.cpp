@@ -46,8 +46,8 @@ void ABasePlayer::Interact(const FInputActionValue& value) {
 	}
 }
 
-void ABasePlayer::SetInteractable(AInteractable* interactable) {
-	interactableObject = interactable;
+void ABasePlayer::SetInteractable(UObject* interactable) {
+	interactableObject = Cast< IInteractableInterface>(interactable);
 }
 
 void ABasePlayer::Move(const FInputActionValue& value) {

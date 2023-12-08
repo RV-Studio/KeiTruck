@@ -24,6 +24,7 @@ void UWidgetHUD::NativeTick(const FGeometry& MyGeometry, float InDeltaTime) {
 	FCollisionObjectQueryParams ObjectParams;
 	ObjectParams.AddObjectTypesToQuery(ECollisionChannel::ECC_WorldStatic);
 	ObjectParams.AddObjectTypesToQuery(ECollisionChannel::ECC_Pawn);
+	ObjectParams.AddObjectTypesToQuery(ECollisionChannel::ECC_Vehicle);
 
 	FCollisionQueryParams Params;
 	Params.TraceTag = "LineTraceSingleForObjects";
@@ -34,31 +35,31 @@ void UWidgetHUD::NativeTick(const FGeometry& MyGeometry, float InDeltaTime) {
 	if (GetOwningPlayerPawn()->GetWorld()->LineTraceSingleByObjectType(OutHit, SP, EP, ObjectParams, Params)) {
 		EndPoint = OutHit.Location;
 
-		AInteractable* hitInteractable = Cast<AInteractable>(OutHit.GetActor());
+		IInteractableInterface* hitInteractable = Cast< IInteractableInterface>(OutHit.GetActor());
 		if (hitInteractable) {
 			if (hitInteractable == InteractableObject) {
-				InteractableObject->IsInteractable(GetOwningPlayerPawn()->GetActorLocation());
+				InteractableObject->SetInteractability(true, GetOwningPlayerPawn()->GetActorLocation());
 				return;
 			}
 			else {
 				if (InteractableObject) {
-					InteractableObject->IsNotInteractable();
+					InteractableObject->SetInteractability(false);
 				}
-				OnSetInteractable.Broadcast(hitInteractable);
-				hitInteractable->IsInteractable(GetOwningPlayerPawn()->GetActorLocation());
+				OnSetInteractable.Broadcast(Cast<UObject>(hitInteractable));
+				hitInteractable->SetInteractability(true, GetOwningPlayerPawn()->GetActorLocation());
 				return;
 			}
 		}
 	}
 
 	if (InteractableObject) {
-		InteractableObject->IsNotInteractable();
+		InteractableObject->SetInteractability(false);
 		SetInteractable(nullptr);
 	}
 }
 
-void UWidgetHUD::SetInteractable(AInteractable* interactable) {
-	InteractableObject = interactable;
+void UWidgetHUD::SetInteractable(UObject* interactable) {
+	InteractableObject = Cast< IInteractableInterface>(interactable);
 }
 
 void UWidgetHUD::GetLinePoints(FVector& _StartPoint, FVector& _EndPoint) {
