@@ -57,6 +57,9 @@ protected:
 	class UInputAction* ActionBrake;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+	class UInputAction* ActionExitVehicle;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	class UInputAction* ActionHandbrake;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
@@ -77,6 +80,9 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 	void Brake(const FInputActionValue& value);
+
+	UFUNCTION(BlueprintCallable)
+	void ExitVehicle(const FInputActionValue& value);
 
 	UFUNCTION(BlueprintCallable)
 	void HandbrakeStart(const FInputActionValue& value);
