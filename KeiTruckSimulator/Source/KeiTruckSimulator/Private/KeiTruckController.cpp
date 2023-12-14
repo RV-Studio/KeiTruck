@@ -114,7 +114,16 @@ void AKeiTruckController::Brake(const FInputActionValue& value) {
 }
 
 void AKeiTruckController::ExitVehicle(const FInputActionValue& value) {
- 	player->GetController()->Possess(player);
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController) {
+		PlayerController->Possess(player);
+
+		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+		if (Subsystem) {
+			Subsystem->ClearAllMappings();
+			Subsystem->AddMappingContext(BipedalMappingContext, 0);
+		}
+	}
 }
 
 void AKeiTruckController::HandbrakeStart(const FInputActionValue& value) {
