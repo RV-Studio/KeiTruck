@@ -55,26 +55,26 @@ FMatrix MathLibrary::LookAt(FVector eye, FVector center) {
 }
 
 FMatrix MathLibrary::TurnTo(FMatrix matrix, FVector target, float turnSpeed) {
-	FVector V = Normalize(target - FVector(matrix.M[3][0], matrix.M[3][1], matrix.M[3][2]));
-	float ratio = Dot(V, FVector(matrix.M[1][0], matrix.M[1][1], matrix.M[1][3]));
+	FVector V = target - FVector(matrix.M[3][0], matrix.M[3][1], matrix.M[3][2]);
+	float ratio = Dot(V, FVector(matrix.M[0][0], matrix.M[0][1], matrix.M[0][3]));
 
-	matrix = ZRotMatrix(-turnSpeed * ratio) * matrix;
-
-	ratio = Dot(V, FVector(matrix.M[2][0], matrix.M[2][1], matrix.M[2][3]));
 	matrix = YRotMatrix(turnSpeed * ratio) * matrix;
 
-	return Orthonormalize(matrix, FVector(0, 0, 1));
+	ratio = Dot(V, FVector(matrix.M[1][0], matrix.M[1][1], matrix.M[1][3]));
+	matrix = XRotMatrix(turnSpeed * ratio) * matrix;
+
+	return Orthonormalize(matrix, FVector(0, 1, 0));
 }
 
 FMatrix MathLibrary::Orthonormalize(FMatrix matrix, FVector up) {
-	FVector X = FVector4(matrix.M[0][0], matrix.M[0][1], matrix.M[0][2], matrix.M[0][3]);
-	FVector Y = Cross(up, X);
+	FVector Z = FVector4(matrix.M[2][0], matrix.M[2][1], matrix.M[2][2], matrix.M[2][3]);
+	FVector X = Cross(up, Z);
+	X = Normalize(X);
+
+	FVector Y = Cross(Z, X);
 	Y = Normalize(Y);
 
-	FVector Z = Cross(X, Y);
-	Z = Normalize(Z);
-
-	return FMatrix(X, Y, Z, FVector4(matrix.M[3][0], matrix.M[3][1], matrix.M[3][2], matrix.M[3][3]));
+	return FMatrix(X, Y , Z, FVector4(matrix.M[3][0], matrix.M[3][1], matrix.M[3][2], matrix.M[3][3]));
 }
 
 float MathLibrary::FInpterpTo(float _current, float _target, float _deltaTime, float _interpSpeed) {

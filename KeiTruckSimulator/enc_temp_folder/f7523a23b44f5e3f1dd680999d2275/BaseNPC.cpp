@@ -21,15 +21,16 @@ void ABaseNPC::BeginPlay() {
 void ABaseNPC::Tick(float DeltaTime) {
 	Super::Tick(DeltaTime);
 	if (isInteractingWithPlayer) {
-		SetActorRotation(MathLibrary::TurnTo(GetTransform().ToMatrixWithScale(), player->GetActorLocation(), turnToPlayerSpeed * DeltaTime).Rotator());
+		SetActorRotation(MathLibrary::TurnTo(GetTransform().ToMatrixWithScale(), player->GetActorLocation(), 5).Rotator());
 	}
 }
 
 void ABaseNPC::Interact(ABasePlayer* _player) {
 	player = _player;
-	isInteractingWithPlayer = true;
 
 	GetController<AAIController>()->GetBrainComponent()->PauseLogic("Talking To Player");
+
+	//SetActorRotation(MathLibrary::TurnTo(GetTransform().ToMatrixWithScale(), _player->GetActorLocation(), 5).Rotator());
 }
 
 void ABaseNPC::SetInteractability(bool _interactability, FVector playerPos) {

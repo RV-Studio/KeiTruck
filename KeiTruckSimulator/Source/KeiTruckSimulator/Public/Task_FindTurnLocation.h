@@ -18,6 +18,7 @@ class KEITRUCKSIMULATOR_API UTask_FindTurnLocation : public UBTTaskCodeNode
 
 protected:
 	virtual void ReceiveExecuteAI(AAIController* OwnerController, APawn* ControlledPawn) override;
+	float currentTurnAmout = 0;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -26,4 +27,6 @@ public:
 		float DegreesToTurn;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		struct FBlackboardKeySelector DestinationKey;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		struct FBlackboardKeySelector TurnAmountHolderKey;
 };

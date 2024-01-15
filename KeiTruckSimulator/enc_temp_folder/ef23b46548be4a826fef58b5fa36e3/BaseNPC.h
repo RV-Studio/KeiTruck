@@ -22,10 +22,7 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 		TSubclassOf<class ABaseAIController> AIClass;
 
-	bool isInteractingWithPlayer = false;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float turnToPlayerSpeed;
+		bool isInteractingWithPlayer = false;
 
 		class ABasePlayer* player;
 

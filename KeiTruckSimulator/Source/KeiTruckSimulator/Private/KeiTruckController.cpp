@@ -99,7 +99,7 @@ void AKeiTruckController::Interact(ABasePlayer* _player) {
 
 void AKeiTruckController::SetInteractability(bool _interactability, FVector playerPos) {
 	if (_interactability) {
-		Rotator->SetWorldRotation(MathLibrary::LookAt(Rotator->GetComponentLocation(), playerPos));
+		Rotator->SetWorldRotation(MathLibrary::LookAt(Rotator->GetComponentLocation(), playerPos).Rotator());
 	}
 
 	TextRenderer->SetVisibility(_interactability, true);
