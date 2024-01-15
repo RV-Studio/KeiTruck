@@ -54,9 +54,6 @@ protected:
 	class UInputMappingContext* KeiMappingContext;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	class UInputMappingContext* BipedalMappingContext;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	class UInputAction* ActionBrake;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)

@@ -65,7 +65,7 @@ void AKeiTruckController::BeginPlay() {
 void AKeiTruckController::InterpsToOriginalRotation(float _deltaTime) {
 	FRotator relRot = SpringArm->GetRelativeRotation();
 	float newYaw = MathLibrary::FInpterpTo(relRot.Yaw, 0, _deltaTime, 1);
-	SpringArm->SetRelativeRotation(FRotator(0, newYaw, 0));
+	SpringArm->SetRelativeRotation(FRotator(0, 0, newYaw));
 }
 
 void AKeiTruckController::Interact(ABasePlayer* _player) {
@@ -114,16 +114,7 @@ void AKeiTruckController::Brake(const FInputActionValue& value) {
 }
 
 void AKeiTruckController::ExitVehicle(const FInputActionValue& value) {
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-	if (PlayerController) {
-		PlayerController->Possess(player);
-
-		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
-		if (Subsystem) {
-			Subsystem->ClearAllMappings();
-			Subsystem->AddMappingContext(BipedalMappingContext, 0);
-		}
-	}
+ 	player->GetController()->Possess(player);
 }
 
 void AKeiTruckController::HandbrakeStart(const FInputActionValue& value) {
@@ -135,16 +126,13 @@ void AKeiTruckController::HandbrakeEnd(const FInputActionValue& value) {
 }
 
 void AKeiTruckController::LookAround(const FInputActionValue& value) {
-	float YawChange = value.Get<float>(); // Adjust the sensitivity here
+	float YawChange = value.Get<float>();
 
 	// Get the current rotation of the spring arm
 	FRotator CurrentRotation = SpringArm->GetRelativeRotation();
 
 	// Modify the yaw (Z-axis rotation) based on the input
-	FRotator NewRotation = FRotator(0, YawChange, 0) + CurrentRotation;
-
-	// Output the resulting rotation for debugging
-	UE_LOG(LogTemp, Warning, TEXT("New Rotation: %s"), *NewRotation.ToString());
+	FRotator NewRotation = FRotator(0, 0, YawChange) + CurrentRotation;
 
 	// Set the new rotation to the spring arm
 	SpringArm->SetRelativeRotation(NewRotation);
