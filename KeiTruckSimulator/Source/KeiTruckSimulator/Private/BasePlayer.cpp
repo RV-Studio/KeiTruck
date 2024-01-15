@@ -14,6 +14,10 @@ ABasePlayer::ABasePlayer() {
 	Camera->SetRelativeLocation(FVector(0, 0, 60));
 
 	CameraRotation = 0;
+
+	ObjectHolder = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ObjectHolder"));
+	ObjectHolder->SetupAttachment(Camera);
+	ObjectHolder->SetRelativeLocation(FVector(30, 10, 0));
 }
 
 void ABasePlayer::BeginPlay() {
@@ -82,5 +86,9 @@ void ABasePlayer::LookUp(float Speed) {
 	FRotator Rotation = this->GetControlRotation();
 	Rotation.Pitch = CameraRotation;
 	Camera->SetWorldRotation(Rotation);
+}
+
+UStaticMeshComponent* ABasePlayer::GetObjectHolderComponent() {
+	return ObjectHolder;
 }
 

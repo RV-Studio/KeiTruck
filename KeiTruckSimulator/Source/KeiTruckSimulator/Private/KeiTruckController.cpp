@@ -21,6 +21,18 @@ AKeiTruckController::AKeiTruckController() {
 	Rotator->SetupAttachment(GetMesh());
 	Rotator->SetRelativeLocation(FVector(0, 0, 40));
 
+	CabBody = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CabBody"));
+	CabBody->SetupAttachment(GetMesh());
+	CabBody->SetRelativeLocation(FVector(0, 0, 40));
+
+	EnterVehiclePosition = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EnterVehiclePosition"));
+	EnterVehiclePosition->SetupAttachment(CabBody);
+	EnterVehiclePosition->SetRelativeLocation(FVector((260, 130, 110)));
+
+	ExitVehiclePosition = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ExitVehiclePosition"));
+	ExitVehiclePosition->SetupAttachment(CabBody);
+	ExitVehiclePosition->SetRelativeLocation(FVector((250, 310, 30)));
+
 	TextRenderer = CreateDefaultSubobject<UTextRenderComponent>(TEXT("TextRenderer"));
 	TextRenderer->SetupAttachment(Rotator);
 	TextRenderer->SetRelativeLocation(FVector(70, 0, 30));
@@ -51,7 +63,7 @@ void AKeiTruckController::Tick(float DeltaTime) {
 	float dampeningAmount = ChaosWheeledVehicleMovementComponent->IsMovingOnGround() ? 0 : 3;
 
 	GetMesh()->SetAngularDamping(dampeningAmount);
-	InterpsToOriginalRotation(DeltaTime);
+	//InterpsToOriginalRotation(DeltaTime);
 }
 
 void AKeiTruckController::BeginPlay() {
@@ -68,6 +80,9 @@ void AKeiTruckController::InterpsToOriginalRotation(float _deltaTime) {
 
 void AKeiTruckController::Interact(ABasePlayer* _player) {
 	_player->GetController()->Possess(this);
+
+	player->AttachToComponent(EnterVehiclePosition, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	player->SetActorEnableCollision(false);
 
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController) {
@@ -107,6 +122,23 @@ void AKeiTruckController::SetupPlayerInputComponent(class UInputComponent* Playe
 
 void AKeiTruckController::Brake(const FInputActionValue& value) {
 	GetVehicleMovementComponent()->SetBrakeInput(value.Get<float>());
+}
+
+void AKeiTruckController::ExitVehicle(const FInputActionValue& value) {
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController) {
+		PlayerController->Possess(player);
+
+		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+		if (Subsystem) {
+			Subsystem->ClearAllMappings();
+			Subsystem->AddMappingContext(BipedalMappingContext, 0);
+		}
+	}
+
+	player->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
+	player->SetActorLocation(ExitVehiclePosition->GetComponentLocation());
+	player->SetActorEnableCollision(true);
 }
 
 void AKeiTruckController::HandbrakeStart(const FInputActionValue& value) {

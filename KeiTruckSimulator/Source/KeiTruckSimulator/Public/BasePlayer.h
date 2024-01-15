@@ -29,6 +29,9 @@ public:
 		void SetInteractable(UObject* interactable);
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION(BlueprintCallable)
+		UStaticMeshComponent* GetObjectHolderComponent();
 	
 protected: 
 	virtual void BeginPlay() override;
@@ -47,6 +50,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 		UInputAction* ActionInteract;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
+		class UStaticMeshComponent* ObjectHolder;
 
 	class IInteractableInterface* interactableObject;
 
