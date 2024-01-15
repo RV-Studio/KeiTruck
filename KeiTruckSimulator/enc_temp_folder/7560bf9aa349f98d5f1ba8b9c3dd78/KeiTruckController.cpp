@@ -21,18 +21,6 @@ AKeiTruckController::AKeiTruckController() {
 	Rotator->SetupAttachment(GetMesh());
 	Rotator->SetRelativeLocation(FVector(0, 0, 40));
 
-	CabBody = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CabBody"));
-	CabBody->SetupAttachment(GetMesh());
-	CabBody->SetRelativeLocation(FVector(0, 0, 40));
-
-	EnterVehiclePosition = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("EnterVehiclePosition"));
-	EnterVehiclePosition->SetupAttachment(CabBody);
-	EnterVehiclePosition->SetRelativeLocation(FVector((260, 130, 110)));
-
-	ExitVehiclePosition = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ExitVehiclePosition"));
-	ExitVehiclePosition->SetupAttachment(CabBody);
-	ExitVehiclePosition->SetRelativeLocation(FVector((250, 310, 30)));
-
 	TextRenderer = CreateDefaultSubobject<UTextRenderComponent>(TEXT("TextRenderer"));
 	TextRenderer->SetupAttachment(Rotator);
 	TextRenderer->SetRelativeLocation(FVector(70, 0, 30));
@@ -65,7 +53,7 @@ void AKeiTruckController::Tick(float DeltaTime) {
 	float dampeningAmount = ChaosWheeledVehicleMovementComponent->IsMovingOnGround() ? 0 : 3;
 
 	GetMesh()->SetAngularDamping(dampeningAmount);
-	//InterpsToOriginalRotation(DeltaTime);
+	InterpsToOriginalRotation(DeltaTime);
 }
 
 void AKeiTruckController::BeginPlay() {
@@ -77,15 +65,12 @@ void AKeiTruckController::BeginPlay() {
 void AKeiTruckController::InterpsToOriginalRotation(float _deltaTime) {
 	FRotator relRot = SpringArm->GetRelativeRotation();
 	float newYaw = MathLibrary::FInpterpTo(relRot.Yaw, 0, _deltaTime, 1);
-	SpringArm->SetRelativeRotation(FRotator(0, newYaw, 0));
+	SpringArm->SetRelativeRotation(FRotator(0, 0, newYaw));
 }
 
 void AKeiTruckController::Interact(ABasePlayer* _player) {
 	_player->GetController()->Possess(this);
 	player = _player;
-
-	player->AttachToComponent(EnterVehiclePosition, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-	player->SetActorEnableCollision(false);
 
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController) {
@@ -129,19 +114,7 @@ void AKeiTruckController::Brake(const FInputActionValue& value) {
 }
 
 void AKeiTruckController::ExitVehicle(const FInputActionValue& value) {
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-	if (PlayerController) {
-		PlayerController->Possess(player);
-
-		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
-		if (Subsystem) {
-			Subsystem->ClearAllMappings();
-			Subsystem->AddMappingContext(BipedalMappingContext, 0);
-		}
-	}
-	player->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
-	player->SetActorLocation(ExitVehiclePosition->GetComponentLocation());
-	player->SetActorEnableCollision(true);
+ 	player->GetController()->Possess(player);
 }
 
 void AKeiTruckController::HandbrakeStart(const FInputActionValue& value) {
@@ -153,16 +126,13 @@ void AKeiTruckController::HandbrakeEnd(const FInputActionValue& value) {
 }
 
 void AKeiTruckController::LookAround(const FInputActionValue& value) {
-	float YawChange = value.Get<float>(); // Adjust the sensitivity here
+	float YawChange = value.Get<float>();
 
 	// Get the current rotation of the spring arm
 	FRotator CurrentRotation = SpringArm->GetRelativeRotation();
 
 	// Modify the yaw (Z-axis rotation) based on the input
-	FRotator NewRotation = FRotator(0, YawChange, 0) + CurrentRotation;
-
-	// Output the resulting rotation for debugging
-	UE_LOG(LogTemp, Warning, TEXT("New Rotation: %s"), *NewRotation.ToString());
+	FRotator NewRotation = FRotator(0, 0, YawChange) + CurrentRotation;
 
 	// Set the new rotation to the spring arm
 	SpringArm->SetRelativeRotation(NewRotation);
