@@ -5,7 +5,7 @@
 #include <Blueprint/SlateBlueprintLibrary.h>
 #include "Components/Image.h"
 #include "Components/Border.h"
-#include "Components/EditableTextBox.h"
+#include "Components/TextBlock.h"
 #include "Interactable.h"
 #include "BasePlayer.h"
 
@@ -14,6 +14,8 @@ void UWidgetHUD::NativeConstruct() {
 
 	OnSetInteractable.AddDynamic(this, &UWidgetHUD::SetInteractable);
 	OnSetInteractable.AddDynamic(Cast<ABasePlayer>(GetOwningPlayerPawn()), &ABasePlayer::SetInteractable);
+
+	DialogueTextBorder->SetVisibility(ESlateVisibility::Hidden);
 }
 
 void UWidgetHUD::NativeTick(const FGeometry& MyGeometry, float InDeltaTime) {
@@ -98,6 +100,12 @@ bool UWidgetHUD::DeprojectScreenToWorld(APlayerController const* Player, const F
 	return false;
 }
 
-void UWidgetHUD::DisplayDialogue(FText dialogueText) {
+void UWidgetHUD::DisplayDialogue(FText dialogueText, ABaseNPC* talkingNPC) {
+	DialogueTextBorder->SetVisibility(ESlateVisibility::Visible);
+
 	DialogueTextBox->SetText(dialogueText);
+}
+
+void UWidgetHUD::CloseDialogue() {
+	DialogueTextBorder->SetVisibility(ESlateVisibility::Hidden);
 }

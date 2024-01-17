@@ -35,15 +35,15 @@ void ABaseNPC::Interact(ABasePlayer* _player) {
 		
 	//GetController<AAIController>()->GetBrainComponent()->PauseLogic("Talking To Player");
 
-	//player->DisplayDialogue(FText::FromString(FString("Test Dialogue")), this);
+	player->DisplayDialogue(FText::FromString(FString("Test Dialogue")), this);
 
-	//FTimerHandle TimerHandle;
-	//GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
-	//	{
-	//		isInteractingWithPlayer = false;
-	//		GetController<AAIController>()->GetBlackboardComponent()->SetValueAsBool("InteractingWithPlayer", false);
-	//		//GetController<AAIController>()->GetBrainComponent()->ResumeLogic("Finished Talking To Player");
-	//	}, 3, false);
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
+		{
+			isInteractingWithPlayer = false;
+			GetController<AAIController>()->GetBlackboardComponent()->SetValueAsBool("InteractingWithPlayer", false);
+			//GetController<AAIController>()->GetBrainComponent()->ResumeLogic("Finished Talking To Player");
+		}, 3, false);
 
 	
 }

@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "WidgetHUD.h"
 #include "Interactable.h"
 
 ABasePlayer::ABasePlayer() {
@@ -21,7 +22,12 @@ ABasePlayer::ABasePlayer() {
 }
 
 void ABasePlayer::BeginPlay() {
+	AsPlayerController = Cast<APlayerController>(GetController());
+	HUD = CreateWidget<UWidgetHUD>(AsPlayerController, HUDClass);
+
 	Super::BeginPlay();
+
+	HUD->AddToViewport();
 
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController) {
@@ -90,5 +96,13 @@ void ABasePlayer::LookUp(float Speed) {
 
 UStaticMeshComponent* ABasePlayer::GetObjectHolderComponent() {
 	return ObjectHolder;
+}
+
+void ABasePlayer::DisplayDialogue(FText dialogueText, ABaseNPC* talkingNPC) {
+	HUD->DisplayDialogue(dialogueText, talkingNPC);
+}
+
+void ABasePlayer::CloseDialogue() {
+	HUD->CloseDialogue();
 }
 

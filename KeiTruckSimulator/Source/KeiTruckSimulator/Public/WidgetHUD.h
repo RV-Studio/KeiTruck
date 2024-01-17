@@ -23,7 +23,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 		class UImage* Crosshair;
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-		class UEditableTextBox* DialogueTextBox;
+		class UBorder* DialogueTextBorder;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+		class UTextBlock* DialogueTextBox;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		FVector EndPoint;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -41,7 +43,9 @@ public:
 	UFUNCTION()
 		bool DeprojectScreenToWorld(APlayerController const* Player, const FVector2D& ScreenPosition, FVector& WorldPosition, FVector& WorldDirection);
 	UFUNCTION()
-		void DisplayDialogue(FText dialogueText);
+		void DisplayDialogue(FText dialogueText, class ABaseNPC* talkingNPC);
+	UFUNCTION()
+		void CloseDialogue();
 
 	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "Event Dispatchers")
 		FEventDispatcherInteractable OnSetInteractable;

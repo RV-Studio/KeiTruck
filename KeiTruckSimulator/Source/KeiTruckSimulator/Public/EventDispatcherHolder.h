@@ -8,6 +8,8 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FEventDispatcherInteractable, UObject*, InteractableObject);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FEventDispatcherDisplayDialogue, FText, DialogueToDisplay, class ABaseNPC*, NPCTalking);
+
 UCLASS()
 class KEITRUCKSIMULATOR_API AEventDispatcherHolder : public AActor
 {

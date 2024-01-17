@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "BaseCharacter.h"
 #include "InteractableInterface.h"
+#include "EventDispatcherHolder.h"
 #include "BaseNPC.generated.h"
 
 /**
@@ -38,4 +39,8 @@ public:
 	virtual void Interact(ABasePlayer* _player) override;
 
 	virtual void SetInteractability(bool _interactability, FVector playerPos = FVector(0, 0, 0));
+
+	void SpeakToPlayer(FText dialogue);
+
+	void StopSpeakingToPlayer();
 };

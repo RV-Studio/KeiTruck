@@ -32,6 +32,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		UStaticMeshComponent* GetObjectHolderComponent();
+
+	void DisplayDialogue(FText dialogueText, class ABaseNPC* talkingNPC);
+
+	void CloseDialogue();
 	
 protected: 
 	virtual void BeginPlay() override;
@@ -53,6 +57,13 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
 		class UStaticMeshComponent* ObjectHolder;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HUD")
+		class UWidgetHUD* HUD;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HUD")
+		TSubclassOf<UWidgetHUD> HUDClass;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		class APlayerController* AsPlayerController;
 
 	class IInteractableInterface* interactableObject;
 
