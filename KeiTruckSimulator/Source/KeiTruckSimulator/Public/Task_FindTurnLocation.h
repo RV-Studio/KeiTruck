@@ -27,6 +27,4 @@ public:
 		float DegreesToTurn;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		struct FBlackboardKeySelector DestinationKey;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		struct FBlackboardKeySelector TurnAmountHolderKey;
 };

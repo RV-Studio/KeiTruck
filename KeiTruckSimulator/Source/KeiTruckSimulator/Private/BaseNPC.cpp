@@ -13,9 +13,10 @@ ABaseNPC::ABaseNPC() {
 	AIControllerClass = AIClass;
 }
 
-
 void ABaseNPC::BeginPlay() {
 	Super::BeginPlay();
+
+	GetController<AAIController>()->GetBlackboardComponent()->SetValueAsVector("Destination", GetActorLocation());
 }
 
 void ABaseNPC::Tick(float DeltaTime) {
@@ -29,7 +30,18 @@ void ABaseNPC::Interact(ABasePlayer* _player) {
 	player = _player;
 	isInteractingWithPlayer = true;
 
+	GetController<AAIController>()->StopMovement();
+		
 	GetController<AAIController>()->GetBrainComponent()->PauseLogic("Talking To Player");
+
+	FTimerHandle TimerHandle;
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
+		{
+			isInteractingWithPlayer = false;
+			GetController<AAIController>()->GetBrainComponent()->ResumeLogic("Finished Talking To Player");
+		}, 3, false);
+
+	
 }
 
 void ABaseNPC::SetInteractability(bool _interactability, FVector playerPos) {

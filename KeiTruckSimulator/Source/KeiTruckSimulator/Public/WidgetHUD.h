@@ -22,6 +22,8 @@ class KEITRUCKSIMULATOR_API UWidgetHUD : public UUserWidget
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 		class UImage* Crosshair;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+		class UEditableTextBox* DialogueTextBox;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		FVector EndPoint;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -38,6 +40,8 @@ public:
 		void GetLinePoints(FVector& _StartPoint, FVector& _EndPoint);
 	UFUNCTION()
 		bool DeprojectScreenToWorld(APlayerController const* Player, const FVector2D& ScreenPosition, FVector& WorldPosition, FVector& WorldDirection);
+	UFUNCTION()
+		void DisplayDialogue(FText dialogueText);
 
 	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "Event Dispatchers")
 		FEventDispatcherInteractable OnSetInteractable;

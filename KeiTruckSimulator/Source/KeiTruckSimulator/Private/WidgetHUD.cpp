@@ -4,6 +4,8 @@
 #include "WidgetHUD.h"
 #include <Blueprint/SlateBlueprintLibrary.h>
 #include "Components/Image.h"
+#include "Components/Border.h"
+#include "Components/EditableTextBox.h"
 #include "Interactable.h"
 #include "BasePlayer.h"
 
@@ -94,4 +96,8 @@ bool UWidgetHUD::DeprojectScreenToWorld(APlayerController const* Player, const F
 	WorldPosition = FVector::ZeroVector;
 	WorldDirection = FVector::ZeroVector;
 	return false;
+}
+
+void UWidgetHUD::DisplayDialogue(FText dialogueText) {
+	DialogueTextBox->SetText(dialogueText);
 }
