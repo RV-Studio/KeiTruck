@@ -22,6 +22,17 @@ class KEITRUCKSIMULATOR_API UWidgetHUD : public UUserWidget
 protected:
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 		class UImage* Crosshair;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+		class UBorder* DialogueTextBorder;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+		class UTextBlock* DialogueTextBox;
+	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
+		class UVerticalBox* DialogueOptionHolder;
+	UPROPERTY(BlueprintReadOnly)
+		TSubclassOf<UBorder> BorderPrefab;
+
+		UBorder* DialogueOptionHighlighter;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		FVector EndPoint;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
@@ -31,6 +42,13 @@ protected:
 
 		class IInteractableInterface* InteractableObject;
 
+		TArray<UTextBlock*> DialogueOptionTexts;
+		int selectedIndex = 0;
+
+		void UpdateDialogueOption();
+
+		class ABaseNPC* TalkingNPC;
+
 public:
 	UFUNCTION()
 		void SetInteractable(UObject* interactable);
@@ -38,6 +56,18 @@ public:
 		void GetLinePoints(FVector& _StartPoint, FVector& _EndPoint);
 	UFUNCTION()
 		bool DeprojectScreenToWorld(APlayerController const* Player, const FVector2D& ScreenPosition, FVector& WorldPosition, FVector& WorldDirection);
+	UFUNCTION()
+		void DisplayDialogue(FText dialogueText, class ABaseNPC* talkingNPC);
+	UFUNCTION()
+		void DisplayDialogueOptions(TArray<FString> dialogueOptions);
+	UFUNCTION()
+		void ScrollOptionsDown();
+	UFUNCTION()
+		void ScrollOptionsUp();
+	UFUNCTION()
+		void SelectOption();
+	UFUNCTION()
+		void CloseDialogue();
 
 	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "Event Dispatchers")
 		FEventDispatcherInteractable OnSetInteractable;

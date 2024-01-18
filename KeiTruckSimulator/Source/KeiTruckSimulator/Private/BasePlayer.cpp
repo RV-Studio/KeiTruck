@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "WidgetHUD.h"
 #include "Interactable.h"
 
 ABasePlayer::ABasePlayer() {
@@ -21,13 +22,19 @@ ABasePlayer::ABasePlayer() {
 }
 
 void ABasePlayer::BeginPlay() {
+	AsPlayerController = Cast<APlayerController>(GetController());
+	HUD = CreateWidget<UWidgetHUD>(AsPlayerController, HUDClass);
+
 	Super::BeginPlay();
+
+	HUD->AddToViewport();
 
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController) {
 		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 		if (Subsystem) {
 			Subsystem->AddMappingContext(BipedalMappingContext, 0);
+			Subsystem->AddMappingContext(DialogueMappingContext, 1);
 		}
 	}
 
@@ -41,6 +48,9 @@ void ABasePlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
 		EnhancedInputComponent->BindAction(ActionJump, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(ActionLook, ETriggerEvent::Triggered, this, &ABasePlayer::LookAround);
 		EnhancedInputComponent->BindAction(ActionInteract, ETriggerEvent::Triggered, this, &ABasePlayer::Interact);
+
+		EnhancedInputComponent->BindAction(ActionNavigateOptions, ETriggerEvent::Triggered, this, &ABasePlayer::NavigateOptions);
+		EnhancedInputComponent->BindAction(ActionSelectOption, ETriggerEvent::Triggered, this, &ABasePlayer::SelectOption);
 	}
 }
 
@@ -48,6 +58,16 @@ void ABasePlayer::Interact(const FInputActionValue& value) {
 	if (interactableObject) {
 		interactableObject->Interact(this);
 	}
+}
+
+void ABasePlayer::NavigateOptions(const FInputActionValue& value) {
+	float currentValue = value.Get<float>();
+	if (currentValue < 0) { HUD->ScrollOptionsDown(); }
+	else if (currentValue > 0) { HUD->ScrollOptionsUp(); }
+}
+
+void ABasePlayer::SelectOption(const FInputActionValue& value) {
+	if (talkingNPC) { HUD->SelectOption(); }
 }
 
 void ABasePlayer::SetInteractable(UObject* interactable) {
@@ -90,5 +110,18 @@ void ABasePlayer::LookUp(float Speed) {
 
 UStaticMeshComponent* ABasePlayer::GetObjectHolderComponent() {
 	return ObjectHolder;
+}
+
+void ABasePlayer::DisplayDialogue(FText dialogueText, ABaseNPC* _talkingNPC) {
+	HUD->DisplayDialogue(dialogueText, _talkingNPC);
+	talkingNPC = _talkingNPC;
+}
+
+void ABasePlayer::DisplayDialogueOptions(TArray<FString> dialogueOptions) {
+	HUD->DisplayDialogueOptions(dialogueOptions);
+}
+
+void ABasePlayer::CloseDialogue() {
+	HUD->CloseDialogue();
 }
 

@@ -62,7 +62,7 @@ void AInteractable::Interact(ABasePlayer* _player) {
 
 void AInteractable::SetInteractability(bool _interactability, FVector playerPos) {
 	if (_interactability) {
-		Rotator->SetWorldRotation(MathLibrary::LookAt(Rotator->GetComponentLocation(), playerPos));
+		Rotator->SetWorldRotation(MathLibrary::LookAt(Rotator->GetComponentLocation(), playerPos).Rotator());
 	}
 
 	TextRenderer->SetVisibility(_interactability, true);

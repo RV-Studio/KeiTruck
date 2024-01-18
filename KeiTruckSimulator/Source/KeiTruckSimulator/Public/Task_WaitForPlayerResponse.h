@@ -4,27 +4,25 @@
 
 #include "CoreMinimal.h"
 #include "BTTaskCodeNode.h"
-#include "Task_FindTurnLocation.generated.h"
+#include "Task_WaitForPlayerResponse.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class KEITRUCKSIMULATOR_API UTask_FindTurnLocation : public UBTTaskCodeNode
+class KEITRUCKSIMULATOR_API UTask_WaitForPlayerResponse : public UBTTaskCodeNode
 {
 	GENERATED_BODY()
-
-	UTask_FindTurnLocation();
+	
+	UTask_WaitForPlayerResponse();
 
 protected:
 	virtual void ReceiveExecuteAI(AAIController* OwnerController, APawn* ControlledPawn) override;
-	float currentTurnAmout = 0;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float Distance;
+		TArray<FString> PlayerOptions;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DegreesToTurn;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		struct FBlackboardKeySelector DestinationKey;
+		struct FBlackboardKeySelector PlayerResponse;
 };

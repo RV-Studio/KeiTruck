@@ -4,14 +4,22 @@
 #include "WidgetHUD.h"
 #include <Blueprint/SlateBlueprintLibrary.h>
 #include "Components/Image.h"
+#include "Components/Border.h"
+#include "Components/TextBlock.h"
+#include "Components/VerticalBox.h"
+#include "Blueprint/WidgetTree.h"
 #include "Interactable.h"
 #include "BasePlayer.h"
+#include "BaseNPC.h"
 
 void UWidgetHUD::NativeConstruct() {
 	Super::NativeConstruct();
 
 	OnSetInteractable.AddDynamic(this, &UWidgetHUD::SetInteractable);
 	OnSetInteractable.AddDynamic(Cast<ABasePlayer>(GetOwningPlayerPawn()), &ABasePlayer::SetInteractable);
+
+	DialogueTextBorder->SetVisibility(ESlateVisibility::Hidden);
+
 }
 
 void UWidgetHUD::NativeTick(const FGeometry& MyGeometry, float InDeltaTime) {
@@ -94,4 +102,66 @@ bool UWidgetHUD::DeprojectScreenToWorld(APlayerController const* Player, const F
 	WorldPosition = FVector::ZeroVector;
 	WorldDirection = FVector::ZeroVector;
 	return false;
+}
+
+void UWidgetHUD::DisplayDialogue(FText dialogueText, ABaseNPC* talkingNPC) {
+	TalkingNPC = talkingNPC;
+	DialogueTextBorder->SetVisibility(ESlateVisibility::Visible);
+
+	DialogueTextBox->SetText(dialogueText);
+}
+
+void UWidgetHUD::DisplayDialogueOptions(TArray<FString> dialogueOptions) {
+	DialogueOptionHolder->ClearChildren();
+	DialogueOptionHolder->SetVisibility(ESlateVisibility::Visible);
+	selectedIndex = 0;
+	DialogueOptionHighlighter = WidgetTree->ConstructWidget<UBorder>(BorderPrefab);
+	DialogueOptionHolder->AddChildToVerticalBox(DialogueOptionHighlighter);
+
+	UTextBlock* dialogueOption;
+	for (int i = 0; i < dialogueOptions.Num(); ++i) {
+		dialogueOption = WidgetTree->ConstructWidget<UTextBlock>();
+		dialogueOption->SetText(FText::FromString(dialogueOptions[i]));
+		DialogueOptionHolder->AddChildToVerticalBox(dialogueOption);
+
+		DialogueOptionTexts.Add(dialogueOption);
+	}
+	DialogueOptionHighlighter->AddChild(DialogueOptionTexts[0]);
+}
+
+void UWidgetHUD::ScrollOptionsDown() {
+	++selectedIndex;
+	if (selectedIndex >= DialogueOptionTexts.Num()) { selectedIndex = 0; }
+
+	UpdateDialogueOption();
+}
+
+void UWidgetHUD::ScrollOptionsUp() {
+	--selectedIndex;
+	if (selectedIndex < 0) { selectedIndex = DialogueOptionTexts.Num() - 1; }
+
+	UpdateDialogueOption();
+}
+
+void UWidgetHUD::UpdateDialogueOption() {
+	DialogueOptionHolder->ClearChildren();
+	DialogueOptionHighlighter->ClearChildren();
+	for (int i = 0; i < DialogueOptionTexts.Num(); ++i) {
+		if (i == selectedIndex) {
+			DialogueOptionHolder->AddChildToVerticalBox(DialogueOptionHighlighter);
+			DialogueOptionHighlighter->AddChild(DialogueOptionTexts[i]);
+		}
+		else { DialogueOptionHolder->AddChildToVerticalBox(DialogueOptionTexts[i]); }
+	}
+}
+
+void UWidgetHUD::SelectOption() {
+	TalkingNPC->PlayerSelectsOption(selectedIndex);
+
+	DialogueOptionHolder->SetVisibility(ESlateVisibility::Hidden);
+	DialogueOptionTexts.Empty();
+}
+
+void UWidgetHUD::CloseDialogue() {
+	DialogueTextBorder->SetVisibility(ESlateVisibility::Hidden);
 }
