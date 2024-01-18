@@ -35,6 +35,8 @@ public:
 
 	void DisplayDialogue(FText dialogueText, class ABaseNPC* talkingNPC);
 
+	void DisplayDialogueOptions(TArray<FString> dialogueOptions);
+
 	void CloseDialogue();
 	
 protected: 
@@ -42,6 +44,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 		class UInputMappingContext* BipedalMappingContext;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+		class UInputMappingContext* DialogueMappingContext;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 		UInputAction* ActionMove;
@@ -54,6 +59,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 		UInputAction* ActionInteract;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+		UInputAction* ActionNavigateOptions;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+		UInputAction* ActionSelectOption;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
 		class UStaticMeshComponent* ObjectHolder;
@@ -78,6 +89,14 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 		void Interact(const FInputActionValue& value);
+
+	UFUNCTION(BlueprintCallable)
+		void NavigateOptions(const FInputActionValue& value);
+
+	UFUNCTION(BlueprintCallable)
+		void SelectOption(const FInputActionValue& value);
+
+		ABaseNPC* talkingNPC;
 
 private:
 	

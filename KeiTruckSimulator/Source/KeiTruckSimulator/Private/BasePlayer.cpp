@@ -34,6 +34,7 @@ void ABasePlayer::BeginPlay() {
 		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 		if (Subsystem) {
 			Subsystem->AddMappingContext(BipedalMappingContext, 0);
+			Subsystem->AddMappingContext(DialogueMappingContext, 1);
 		}
 	}
 
@@ -47,6 +48,9 @@ void ABasePlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
 		EnhancedInputComponent->BindAction(ActionJump, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(ActionLook, ETriggerEvent::Triggered, this, &ABasePlayer::LookAround);
 		EnhancedInputComponent->BindAction(ActionInteract, ETriggerEvent::Triggered, this, &ABasePlayer::Interact);
+
+		EnhancedInputComponent->BindAction(ActionNavigateOptions, ETriggerEvent::Triggered, this, &ABasePlayer::NavigateOptions);
+		EnhancedInputComponent->BindAction(ActionSelectOption, ETriggerEvent::Triggered, this, &ABasePlayer::SelectOption);
 	}
 }
 
@@ -54,6 +58,16 @@ void ABasePlayer::Interact(const FInputActionValue& value) {
 	if (interactableObject) {
 		interactableObject->Interact(this);
 	}
+}
+
+void ABasePlayer::NavigateOptions(const FInputActionValue& value) {
+	float currentValue = value.Get<float>();
+	if (currentValue < 0) { HUD->ScrollOptionsDown(); }
+	else if (currentValue > 0) { HUD->ScrollOptionsUp(); }
+}
+
+void ABasePlayer::SelectOption(const FInputActionValue& value) {
+	if (talkingNPC) { HUD->SelectOption(); }
 }
 
 void ABasePlayer::SetInteractable(UObject* interactable) {
@@ -98,8 +112,13 @@ UStaticMeshComponent* ABasePlayer::GetObjectHolderComponent() {
 	return ObjectHolder;
 }
 
-void ABasePlayer::DisplayDialogue(FText dialogueText, ABaseNPC* talkingNPC) {
-	HUD->DisplayDialogue(dialogueText, talkingNPC);
+void ABasePlayer::DisplayDialogue(FText dialogueText, ABaseNPC* _talkingNPC) {
+	HUD->DisplayDialogue(dialogueText, _talkingNPC);
+	talkingNPC = _talkingNPC;
+}
+
+void ABasePlayer::DisplayDialogueOptions(TArray<FString> dialogueOptions) {
+	HUD->DisplayDialogueOptions(dialogueOptions);
 }
 
 void ABasePlayer::CloseDialogue() {

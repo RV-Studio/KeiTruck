@@ -42,5 +42,13 @@ public:
 
 	void SpeakToPlayer(FText dialogue);
 
+	void DisplayDialogueOptions(TArray<FString> dialogueOptions);
+
 	void StopSpeakingToPlayer();
+	
+	void PlayerSelectsOption(int playerSelection);
+
+	bool waitingForPlayerSelection = false;
+
+	int playersSelectedOption = 0;
 };

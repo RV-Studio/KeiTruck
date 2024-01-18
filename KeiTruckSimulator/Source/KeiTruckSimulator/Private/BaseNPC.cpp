@@ -56,9 +56,22 @@ void ABaseNPC::SpeakToPlayer(FText dialogue) {
 	player->DisplayDialogue(dialogue, this);
 }
 
+void ABaseNPC::DisplayDialogueOptions(TArray<FString> dialogueOptions) {
+	player->DisplayDialogueOptions(dialogueOptions);
+}
+
 void ABaseNPC::StopSpeakingToPlayer() {
 	isInteractingWithPlayer = false;
 	GetController<AAIController>()->GetBlackboardComponent()->SetValueAsBool("InteractingWithPlayer", false);
 
 	player->CloseDialogue();
+}
+
+void ABaseNPC::PlayerSelectsOption(int _playerSelection) {
+	playersSelectedOption = _playerSelection;
+
+	waitingForPlayerSelection = false;
+
+	GetController<AAIController>()->GetBlackboardComponent()->SetValueAsInt("PlayersSelection", _playerSelection);
+	FAIMessage::Send(this, FAIMessage(FName("PlayerChose"), nullptr, true));
 }
