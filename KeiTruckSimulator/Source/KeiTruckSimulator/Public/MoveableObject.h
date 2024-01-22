@@ -21,14 +21,23 @@ public:
 		FVector GetDimensions();
 
 	UFUNCTION(BlueprintCallable)
-		bool GetIsVertical();
+		TArray<FVector> GetCorners();
+
+	UFUNCTION(BlueprintCallable)
+		FVector4 GetMaxBounds();
+
+	UFUNCTION(BlueprintCallable)
+		void PlaceObject(FVector placement, float rotation, TScriptInterface<class IInventoryInterface> _container);
 	
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	int unitWidth;
+		int UnitWidth;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	int unitDepth;
+		int UnitDepth;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	bool isVertical;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		TArray<FVector> Corners;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		TScriptInterface<IInventoryInterface> Container;
 };

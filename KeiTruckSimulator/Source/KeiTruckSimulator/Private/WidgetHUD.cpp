@@ -44,25 +44,37 @@ void UWidgetHUD::NativeTick(const FGeometry& MyGeometry, float InDeltaTime) {
 		EndPoint = OutHit.Location;
 
 		IInteractableInterface* hitInteractable = Cast< IInteractableInterface>(OutHit.GetActor());
+		// We are looking at a interactable object
 		if (hitInteractable) {
+			// We are looking at the same object we were looking at last frame
 			if (hitInteractable == InteractableObject) {
 				InteractableObject->SetInteractability(true, GetOwningPlayerPawn()->GetActorLocation());
 				return;
 			}
+			// We are looking at a different object
 			else {
+				// We were previously looking at a different object
 				if (InteractableObject) {
 					InteractableObject->SetInteractability(false);
 				}
-				OnSetInteractable.Broadcast(Cast<UObject>(hitInteractable));
-				hitInteractable->SetInteractability(true, GetOwningPlayerPawn()->GetActorLocation());
-				return;
+				// We are able to interact with this object
+				hitInteractable->SetTargetability(Cast<ABasePlayer>(GetOwningPlayerPawn()));
+				if (hitInteractable->IsTargetable()) {
+					OnSetInteractable.Broadcast(Cast<UObject>(hitInteractable));
+					hitInteractable->SetInteractability(true, GetOwningPlayerPawn()->GetActorLocation());
+					return;
+				}
+				else {
+					hitInteractable->SetInteractability(false);
+					OnSetInteractable.Broadcast(nullptr);
+				}
 			}
 		}
 	}
 
 	if (InteractableObject) {
 		InteractableObject->SetInteractability(false);
-		SetInteractable(nullptr);
+		OnSetInteractable.Broadcast(nullptr);
 	}
 }
 

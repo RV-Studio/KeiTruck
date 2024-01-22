@@ -71,6 +71,8 @@ void AKeiTruckController::Tick(float DeltaTime) {
 void AKeiTruckController::BeginPlay() {
 	Super::BeginPlay();
 
+	SetTargetability();
+
 	ChaosWheeledVehicleMovementComponent = Cast<UChaosWheeledVehicleMovementComponent>(GetVehicleMovementComponent());
 }
 

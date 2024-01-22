@@ -125,3 +125,12 @@ void ABasePlayer::CloseDialogue() {
 	HUD->CloseDialogue();
 }
 
+void ABasePlayer::PickupObject(AMoveableObject* objectToHold) {
+	heldObject = objectToHold;
+}
+
+bool ABasePlayer::IsHoldingObject() { return (heldObject != nullptr); }
+
+AMoveableObject* ABasePlayer::GetHeldObject() {
+	return heldObject;
+}

@@ -5,7 +5,7 @@
 
 // Add default functionality here for any IInteractableInterface functions that are not pure virtual.
 
-void IInteractableInterface::SetTargetability(bool _targetability) {
+void IInteractableInterface::SetTargetability(class ABasePlayer* _player, bool _targetability) {
 	targetable = _targetability;
 }
 

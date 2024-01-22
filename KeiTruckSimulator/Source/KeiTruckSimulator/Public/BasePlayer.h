@@ -38,6 +38,12 @@ public:
 	void DisplayDialogueOptions(TArray<FString> dialogueOptions);
 
 	void CloseDialogue();
+
+	void PickupObject(class AMoveableObject* objectToHold);
+
+	bool IsHoldingObject();
+
+	AMoveableObject* GetHeldObject();
 	
 protected: 
 	virtual void BeginPlay() override;
@@ -97,6 +103,8 @@ protected:
 		void SelectOption(const FInputActionValue& value);
 
 		ABaseNPC* talkingNPC;
+
+		class AMoveableObject* heldObject;
 
 private:
 	

@@ -16,6 +16,7 @@ ABaseNPC::ABaseNPC() {
 void ABaseNPC::BeginPlay() {
 	Super::BeginPlay();
 
+	SetTargetability();
 	GetController<AAIController>()->GetBlackboardComponent()->SetValueAsVector("Destination", GetActorLocation());
 }
 
