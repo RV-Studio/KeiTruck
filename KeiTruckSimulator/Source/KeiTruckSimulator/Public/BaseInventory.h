@@ -16,7 +16,14 @@ class KEITRUCKSIMULATOR_API ABaseInventory : public AInteractable, public IInven
 	GENERATED_BODY()
 	
 public:
+
 	virtual void Interact(ABasePlayer* _player) override;
 
 	virtual void SetTargetability(class ABasePlayer* _player = nullptr, bool _targetability = true) override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		TArray<FVector> EditableInventoryCorners;
+
+protected:
+	virtual void BeginPlay() override;
 };

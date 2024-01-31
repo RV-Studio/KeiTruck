@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#pragma optimize("", off)
 
 #include "InventoryInterface.h"
 #include "MoveableObject.h"
@@ -15,7 +16,7 @@ bool IInventoryInterface::AddItemToInventory(AMoveableObject* itemToAdd) {
 		ItemsInInventory = hypotheticalInventory;
 		for (int i = 0; i < successfulCCOAs.Num(); ++i) {
 			CCOA currCCOA = successfulCCOAs[i];
-			currCCOA.object->PlaceObject(FVector(currCCOA.x, currCCOA.y, 0), currCCOA.theta, this);
+			currCCOA.object->PlaceObject(FVector(currCCOA.x, currCCOA.y, 50), currCCOA.theta, Cast<APawn>(this));
 		}
 		return true;
 	}
@@ -28,7 +29,7 @@ bool IInventoryInterface::RemoveItemFromIventory(AMoveableObject* itemToRemove) 
 	SortItems(ItemsInInventory, successfulCCOAs);
 	for (int i = 0; i < successfulCCOAs.Num(); ++i) {
 		CCOA currCCOA = successfulCCOAs[i];
-		currCCOA.object->PlaceObject(FVector(currCCOA.x, currCCOA.y, 0), currCCOA.theta, this);
+		currCCOA.object->PlaceObject(FVector(currCCOA.x, currCCOA.y, 50), currCCOA.theta, Cast<APawn>(this));
 	}
 	return true;
 }
@@ -40,22 +41,22 @@ TArray<IInventoryInterface::CCOA> IInventoryInterface::GenerateCCOAs(TArray<FVec
 			float theta = 0;
 			//top right
 			float newX = corners[i].X + (remainingItems[j]->GetDimensions().X / 2);
-			float newY = corners[i].X + (remainingItems[j]->GetDimensions().Y / 2);
+			float newY = corners[i].Y - (remainingItems[j]->GetDimensions().Y / 2);
 			CCOA newCCOA(remainingItems[j], newX, newY, theta);
 			if (ValidateCCOA(newCCOA, sortedItems)) { CCOAs.Add(newCCOA); }
 			//bottom right
 			newX = corners[i].X + (remainingItems[j]->GetDimensions().X / 2);
-			newY = corners[i].X - (remainingItems[j]->GetDimensions().Y / 2);
+			newY = corners[i].Y + (remainingItems[j]->GetDimensions().Y / 2);
 			newCCOA = CCOA(remainingItems[j], newX, newY, theta);
 			if (ValidateCCOA(newCCOA, sortedItems)) { CCOAs.Add(newCCOA); }
 			//top left
 			newX = corners[i].X - (remainingItems[j]->GetDimensions().X / 2);
-			newY = corners[i].X + (remainingItems[j]->GetDimensions().Y / 2);
+			newY = corners[i].Y - (remainingItems[j]->GetDimensions().Y / 2);
 			newCCOA = CCOA(remainingItems[j], newX, newY, theta);
 			if (ValidateCCOA(newCCOA, sortedItems)) { CCOAs.Add(newCCOA); }
 			//bottom left
 			newX = corners[i].X - (remainingItems[j]->GetDimensions().X / 2);
-			newY = corners[i].X - (remainingItems[j]->GetDimensions().Y / 2);
+			newY = corners[i].Y + (remainingItems[j]->GetDimensions().Y / 2);
 			newCCOA = CCOA(remainingItems[j], newX, newY, theta);
 			if (ValidateCCOA(newCCOA, sortedItems)) { CCOAs.Add(newCCOA); }
 
@@ -63,22 +64,22 @@ TArray<IInventoryInterface::CCOA> IInventoryInterface::GenerateCCOAs(TArray<FVec
 			theta = 90;
 			//top right
 			newX = corners[i].X + (remainingItems[j]->GetDimensions().Y / 2);
-			newY = corners[i].X + (remainingItems[j]->GetDimensions().X / 2);
+			newY = corners[i].Y - (remainingItems[j]->GetDimensions().X / 2);
 			newCCOA = CCOA(remainingItems[j], newX, newY, theta);
 			if (ValidateCCOA(newCCOA, sortedItems)) { CCOAs.Add(newCCOA); }
 			//bottom right
 			newX = corners[i].X + (remainingItems[j]->GetDimensions().Y / 2);
-			newY = corners[i].X - (remainingItems[j]->GetDimensions().X / 2);
+			newY = corners[i].Y + (remainingItems[j]->GetDimensions().X / 2);
 			newCCOA = CCOA(remainingItems[j], newX, newY, theta);
 			if (ValidateCCOA(newCCOA, sortedItems)) { CCOAs.Add(newCCOA); }
 			//top left
 			newX = corners[i].X - (remainingItems[j]->GetDimensions().Y / 2);
-			newY = corners[i].X + (remainingItems[j]->GetDimensions().X / 2);
+			newY = corners[i].Y - (remainingItems[j]->GetDimensions().X / 2);
 			newCCOA = CCOA(remainingItems[j], newX, newY, theta);
 			if (ValidateCCOA(newCCOA, sortedItems)) { CCOAs.Add(newCCOA); }
 			//bottom left
 			newX = corners[i].X - (remainingItems[j]->GetDimensions().Y / 2);
-			newY = corners[i].X - (remainingItems[j]->GetDimensions().X / 2);
+			newY = corners[i].Y + (remainingItems[j]->GetDimensions().X / 2);
 			newCCOA = CCOA(remainingItems[j], newX, newY, theta);
 			if (ValidateCCOA(newCCOA, sortedItems)) { CCOAs.Add(newCCOA); }
 		}
@@ -94,34 +95,36 @@ bool IInventoryInterface::ValidateCCOA(CCOA _CCOA, TArray<CCOA> sortedItems) {
 		aBottomRight = FVector2f(_CCOA.object->GetMaxBounds().W + _CCOA.x, _CCOA.object->GetMaxBounds().Y + _CCOA.y);
 	}
 	else {
-		aTopLeft = FVector2f(_CCOA.object->GetMaxBounds().Y + _CCOA.x, _CCOA.object->GetMaxBounds().Z + _CCOA.y);
-		aBottomRight = FVector2f(_CCOA.object->GetMaxBounds().X + _CCOA.x, _CCOA.object->GetMaxBounds().W + _CCOA.y);
+		aTopLeft = FVector2f(_CCOA.x - _CCOA.object->GetMaxBounds().Y, _CCOA.y + _CCOA.object->GetMaxBounds().Z);
+		aBottomRight = FVector2f(_CCOA.x - _CCOA.object->GetMaxBounds().X, _CCOA.y + _CCOA.object->GetMaxBounds().W);
 	}
 	
 
-	FVector2f bTopLeft;
-	FVector2f bBottomRight;
+	if (sortedItems.Num() > 0) {
+		FVector2f bTopLeft;
+		FVector2f bBottomRight;
 
-	CCOA currentCCOA = sortedItems[0];
-	for (int i = 0; i < sortedItems.Num(); ++i) {
-		currentCCOA = sortedItems[i];
-		if (currentCCOA.theta == 0) {
-			bTopLeft = FVector2f(currentCCOA.object->GetMaxBounds().Z + currentCCOA.x, currentCCOA.object->GetMaxBounds().X + currentCCOA.y);
-			bBottomRight = FVector2f(currentCCOA.object->GetMaxBounds().W + currentCCOA.x, currentCCOA.object->GetMaxBounds().Y + currentCCOA.y);
+		CCOA currentCCOA = sortedItems[0];
+		for (int i = 0; i < sortedItems.Num(); ++i) {
+			currentCCOA = sortedItems[i];
+			if (currentCCOA.theta == 0) {
+				bTopLeft = FVector2f(currentCCOA.object->GetMaxBounds().Z + currentCCOA.x, currentCCOA.object->GetMaxBounds().X + currentCCOA.y);
+				bBottomRight = FVector2f(currentCCOA.object->GetMaxBounds().W + currentCCOA.x, currentCCOA.object->GetMaxBounds().Y + currentCCOA.y);
+			}
+			else {
+				bTopLeft = FVector2f(currentCCOA.object->GetMaxBounds().Y - currentCCOA.x, currentCCOA.object->GetMaxBounds().Z - currentCCOA.y);
+				bBottomRight = FVector2f(currentCCOA.object->GetMaxBounds().X - currentCCOA.x, currentCCOA.object->GetMaxBounds().W - currentCCOA.y);
+			}
+
+			if (aTopLeft.X >= bBottomRight.X || bTopLeft.X >= aBottomRight.X) { continue; }
+			if (aBottomRight.Y <= bTopLeft.Y || bBottomRight.Y <= aTopLeft.Y) { continue; }
+
+			return false;
 		}
-		else {
-			bTopLeft = FVector2f(currentCCOA.object->GetMaxBounds().Y + currentCCOA.x, currentCCOA.object->GetMaxBounds().Z + currentCCOA.y);
-			bBottomRight = FVector2f(currentCCOA.object->GetMaxBounds().X + currentCCOA.x, currentCCOA.object->GetMaxBounds().W + currentCCOA.y);
-		}
-
-		if (aTopLeft.X > bBottomRight.X || bTopLeft.X > aBottomRight.X) { continue; }
-		if (aBottomRight.Y > bTopLeft.Y || bBottomRight.Y > aTopLeft.Y) { continue; }
-
-		return false;
 	}
 
 	//Check overlap on walls
-	if (aTopLeft.X < Bounds.Z || aTopLeft.Y > Bounds.X || aBottomRight.X > Bounds.W || aBottomRight.Y < Bounds.Y) { return false; }
+	if (aTopLeft.X < Bounds.Z || aTopLeft.Y < Bounds.X || aBottomRight.X > Bounds.W || aBottomRight.Y > Bounds.Y) { return false; }
 
 	return true;
 }
@@ -130,11 +133,40 @@ float IInventoryInterface::CalculateCCOADegree(CCOA _CCOA, TArray<CCOA> sortedIt
 	int zeroCounter = 2;
 	float dMin = std::numeric_limits<float>::max();
 	float currentMin;
-	for (int i = 0; i < sortedItems.Num(); ++i) {
-		currentMin = CalculateMinDistance(_CCOA, sortedItems[i]);
-		if (currentMin == 0 && zeroCounter != 0) { continue; }
-		else if (currentMin < dMin) { dMin = currentMin; }
-	}
+		if (_CCOA.theta == 0) {
+			for (int i = 0; i < 4; ++i) {
+				currentMin = fabsf(_CCOA.object->GetMaxBounds().XYZW[i] - Bounds.XYZW[i]);
+				if (currentMin == 0 && zeroCounter != 0) {
+					--zeroCounter;
+					continue;
+				}
+				else if (currentMin < dMin) { dMin = currentMin; }
+			}
+		}
+		else {
+			for (int i = 0; i < 3; ++i) {
+				currentMin = fabsf(_CCOA.object->GetMaxBounds().XYZW[i + 1] - Bounds.XYZW[i]);
+				if (currentMin == 0 && zeroCounter != 0) {
+					--zeroCounter;
+					continue;
+				}
+				else if (currentMin < dMin) { dMin = currentMin; }
+			}
+			currentMin = fabsf(_CCOA.object->GetMaxBounds().XYZW[0] - Bounds.XYZW[3]);
+			if (currentMin == 0 && zeroCounter != 0) {
+				--zeroCounter;
+			}
+			else if (currentMin < dMin) { dMin = currentMin; }
+		}
+
+		for (int i = 0; i < sortedItems.Num(); ++i) {
+			currentMin = CalculateMinDistance(_CCOA, sortedItems[i]);
+			if (currentMin == 0 && zeroCounter != 0) {
+				--zeroCounter;
+				continue;
+			}
+			else if (currentMin < dMin) { dMin = currentMin; }
+		}
 
 	FVector objectDimensions = _CCOA.object->GetDimensions();
 	return 1 - (dMin / ((objectDimensions.X + objectDimensions.Y) / 2));
@@ -208,7 +240,8 @@ bool IInventoryInterface::SortItems(TArray<AMoveableObject*> itemsToSort, TArray
 
 		// Remove the corresponding item from remaining
 		remainingItems.Remove(bestCCOA.object);
-
+		highestDegree = 0;
+		CCOAs.Empty();
 	}
 	successfulCCOAs = PlacedCCOAs; 
 	return true;

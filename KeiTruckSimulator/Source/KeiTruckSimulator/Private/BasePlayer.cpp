@@ -7,6 +7,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "WidgetHUD.h"
 #include "Interactable.h"
+#include "MoveableObject.h"
 
 ABasePlayer::ABasePlayer() {
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
@@ -19,6 +20,10 @@ ABasePlayer::ABasePlayer() {
 	ObjectHolder = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ObjectHolder"));
 	ObjectHolder->SetupAttachment(Camera);
 	ObjectHolder->SetRelativeLocation(FVector(30, 10, 0));
+
+	DropObjectLocation = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DropObjectLocation"));
+	DropObjectLocation->SetupAttachment(RootComponent);
+	DropObjectLocation->SetRelativeLocation(FVector((0, 0, 0)));
 }
 
 void ABasePlayer::BeginPlay() {
@@ -47,10 +52,11 @@ void ABasePlayer::SetupPlayerInputComponent(class UInputComponent* PlayerInputCo
 		EnhancedInputComponent->BindAction(ActionMove, ETriggerEvent::Triggered, this, &ABasePlayer::Move);
 		EnhancedInputComponent->BindAction(ActionJump, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(ActionLook, ETriggerEvent::Triggered, this, &ABasePlayer::LookAround);
-		EnhancedInputComponent->BindAction(ActionInteract, ETriggerEvent::Triggered, this, &ABasePlayer::Interact);
+		EnhancedInputComponent->BindAction(ActionInteract, ETriggerEvent::Started, this, &ABasePlayer::Interact);
+		EnhancedInputComponent->BindAction(ActionDropObject, ETriggerEvent::Started, this, &ABasePlayer::DropHeldObject);
 
 		EnhancedInputComponent->BindAction(ActionNavigateOptions, ETriggerEvent::Triggered, this, &ABasePlayer::NavigateOptions);
-		EnhancedInputComponent->BindAction(ActionSelectOption, ETriggerEvent::Triggered, this, &ABasePlayer::SelectOption);
+		EnhancedInputComponent->BindAction(ActionSelectOption, ETriggerEvent::Started, this, &ABasePlayer::SelectOption);
 	}
 }
 
@@ -60,10 +66,23 @@ void ABasePlayer::Interact(const FInputActionValue& value) {
 	}
 }
 
+void ABasePlayer::DropHeldObject(const FInputActionValue& value) {
+	if (heldObject) {
+		heldObject->SetActorEnableCollision(true);
+		heldObject->Cube->SetSimulatePhysics(true);
+		heldObject->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
+		heldObject->SetActorLocation(DropObjectLocation->GetComponentLocation());
+
+		PickupObject(nullptr);
+	}
+}
+
 void ABasePlayer::NavigateOptions(const FInputActionValue& value) {
-	float currentValue = value.Get<float>();
-	if (currentValue < 0) { HUD->ScrollOptionsDown(); }
-	else if (currentValue > 0) { HUD->ScrollOptionsUp(); }
+	if (talkingNPC) {
+		float currentValue = value.Get<float>();
+		if (currentValue < 0) { HUD->ScrollOptionsDown(); }
+		else if (currentValue > 0) { HUD->ScrollOptionsUp(); }
+	}
 }
 
 void ABasePlayer::SelectOption(const FInputActionValue& value) {
@@ -130,6 +149,19 @@ void ABasePlayer::PickupObject(AMoveableObject* objectToHold) {
 }
 
 bool ABasePlayer::IsHoldingObject() { return (heldObject != nullptr); }
+
+void ABasePlayer::ExitVehicle() {
+	APlayerController* PlayerController = Cast<APlayerController>(GetController());
+	if (PlayerController) {
+
+		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
+		if (Subsystem) {
+			Subsystem->ClearAllMappings();
+			Subsystem->AddMappingContext(BipedalMappingContext, 0);
+			Subsystem->AddMappingContext(DialogueMappingContext, 1);
+		}
+	}
+}
 
 AMoveableObject* ABasePlayer::GetHeldObject() {
 	return heldObject;

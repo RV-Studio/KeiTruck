@@ -18,6 +18,7 @@ void ABaseNPC::BeginPlay() {
 
 	SetTargetability();
 	GetController<AAIController>()->GetBlackboardComponent()->SetValueAsVector("Destination", GetActorLocation());
+	GetController<AAIController>()->GetBlackboardComponent()->SetValueAsBool("InteractingWithPlayer", false);
 }
 
 void ABaseNPC::Tick(float DeltaTime) {

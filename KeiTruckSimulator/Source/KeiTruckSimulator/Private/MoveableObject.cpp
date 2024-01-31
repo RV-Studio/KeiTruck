@@ -9,11 +9,16 @@ void AMoveableObject::Interact(ABasePlayer* _player) {
 	Super::Interact(_player);
 
 	if (Container != nullptr) {
-		Container->RemoveItemFromIventory(this);
+		Cast<IInventoryInterface>(Container)->RemoveItemFromIventory(this);
 	}
-
-	AttachToComponent(_player->GetObjectHolderComponent(), FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+	_player->PickupObject(this);
 	SetActorEnableCollision(false);
+	Cube->SetSimulatePhysics(false);
+	AttachToComponent(_player->GetObjectHolderComponent(), FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+}
+
+void AMoveableObject::SetTargetability(ABasePlayer* _player, bool _targetability) {
+	targetable = !_player->IsHoldingObject();
 }
 
 FVector AMoveableObject::GetDimensions() {
@@ -26,16 +31,21 @@ TArray<FVector> AMoveableObject::GetCorners()
 }
 
 FVector4 AMoveableObject::GetMaxBounds() {
-	float top = fmaxf(fmaxf(Corners[0].Y, Corners[1].Y), fmaxf(Corners[2].Y, Corners[3].Y));
-	float bottom = fminf(fminf(Corners[0].Y, Corners[1].Y), fminf(Corners[2].Y, Corners[3].Y));
+	float top = fminf(fminf(Corners[0].Y, Corners[1].Y), fminf(Corners[2].Y, Corners[3].Y));
+	float bottom = fmaxf(fmaxf(Corners[0].Y, Corners[1].Y), fmaxf(Corners[2].Y, Corners[3].Y));
 	float left = fminf(fminf(Corners[0].X, Corners[1].X), fminf(Corners[2].X, Corners[3].X));
 	float right = fmaxf(fmaxf(Corners[0].X, Corners[1].X), fmaxf(Corners[2].X, Corners[3].X));
 
 	return FVector4(top, bottom, left, right);
 }
 
-void AMoveableObject::PlaceObject(FVector _placement, float _rotation, TScriptInterface<IInventoryInterface> _container) {
-	SetActorLocation(_placement);
-	SetActorRotation(FRotator(0, _rotation, 0));
+void AMoveableObject::PlaceObject(FVector _placement, float _rotation, APawn* _container) {
+	DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
+	FAttachmentTransformRules attachmentRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
+	AttachToActor(_container, attachmentRules);
+	SetActorRelativeLocation(_placement);
+	SetActorRelativeRotation(FRotator(0, _rotation, 0));
+	SetActorEnableCollision(true);
 	Container = _container;
+
 }

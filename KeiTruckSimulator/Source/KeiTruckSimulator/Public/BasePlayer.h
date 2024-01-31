@@ -43,6 +43,8 @@ public:
 
 	bool IsHoldingObject();
 
+	void ExitVehicle();
+
 	AMoveableObject* GetHeldObject();
 	
 protected: 
@@ -67,6 +69,9 @@ protected:
 		UInputAction* ActionInteract;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+		UInputAction* ActionDropObject;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 		UInputAction* ActionNavigateOptions;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
@@ -82,6 +87,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		class APlayerController* AsPlayerController;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		class UStaticMeshComponent* DropObjectLocation;
+
 	class IInteractableInterface* interactableObject;
 
 	UFUNCTION(BlueprintCallable)
@@ -95,6 +103,9 @@ protected:
 
 	UFUNCTION(BlueprintCallable)
 		void Interact(const FInputActionValue& value);
+
+	UFUNCTION(BlueprintCallable)
+		void DropHeldObject(const FInputActionValue& value);
 
 	UFUNCTION(BlueprintCallable)
 		void NavigateOptions(const FInputActionValue& value);

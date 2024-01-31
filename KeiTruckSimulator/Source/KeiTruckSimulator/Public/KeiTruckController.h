@@ -41,7 +41,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
 	class UStaticMeshComponent* Rotator;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Component")
 	class UStaticMeshComponent* CabBody;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
@@ -61,9 +61,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	class UInputMappingContext* KeiMappingContext;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
-	class UInputMappingContext* BipedalMappingContext;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	class UInputAction* ActionBrake;

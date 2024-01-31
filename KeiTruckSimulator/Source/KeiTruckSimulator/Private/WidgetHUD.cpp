@@ -33,6 +33,7 @@ void UWidgetHUD::NativeTick(const FGeometry& MyGeometry, float InDeltaTime) {
 	ObjectParams.AddObjectTypesToQuery(ECollisionChannel::ECC_WorldStatic);
 	ObjectParams.AddObjectTypesToQuery(ECollisionChannel::ECC_Pawn);
 	ObjectParams.AddObjectTypesToQuery(ECollisionChannel::ECC_Vehicle);
+	ObjectParams.AddObjectTypesToQuery(ECollisionChannel::ECC_PhysicsBody);
 
 	FCollisionQueryParams Params;
 	Params.TraceTag = "LineTraceSingleForObjects";

@@ -27,6 +27,9 @@ public:
 
 	virtual void SetInteractability(bool _interactability, FVector playerPos = FVector(0, 0, 0)) override;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
+	class UStaticMeshComponent* Cube;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -39,9 +42,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
 	class UBoxComponent* Box;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
-	class UStaticMeshComponent* Cube;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class ABasePlayer* player;
