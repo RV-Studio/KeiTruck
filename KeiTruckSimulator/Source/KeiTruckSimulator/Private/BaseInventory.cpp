@@ -5,6 +5,8 @@
 #include "BasePlayer.h"
 
 void ABaseInventory::BeginPlay() {
+	Super::BeginPlay();
+
 	InventoryCorners = EditableInventoryCorners;
 
 	if (InventoryCorners.Num() == 4) {

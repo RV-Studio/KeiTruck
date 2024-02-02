@@ -130,9 +130,9 @@ bool IInventoryInterface::ValidateCCOA(CCOA _CCOA, TArray<CCOA> sortedItems) {
 }
 
 float IInventoryInterface::CalculateCCOADegree(CCOA _CCOA, TArray<CCOA> sortedItems) {
-	int zeroCounter = 2;
+	int zeroCounter = 1;
 	float dMin = std::numeric_limits<float>::max();
-	float currentMin;
+	float currentMin = 0;
 		if (_CCOA.theta == 0) {
 			for (int i = 0; i < 4; ++i) {
 				currentMin = fabsf(_CCOA.object->GetMaxBounds().XYZW[i] - Bounds.XYZW[i]);
@@ -167,7 +167,7 @@ float IInventoryInterface::CalculateCCOADegree(CCOA _CCOA, TArray<CCOA> sortedIt
 			}
 			else if (currentMin < dMin) { dMin = currentMin; }
 		}
-
+	//dMin = currentMin / (sortedItems.Num() + 4);
 	FVector objectDimensions = _CCOA.object->GetDimensions();
 	return 1 - (dMin / ((objectDimensions.X + objectDimensions.Y) / 2));
 }
@@ -198,11 +198,11 @@ float IInventoryInterface::CalculateMinDistance(CCOA obj_a, CCOA obj_b) {
 		obj_b_bounds.Z = temp;
 	}
 
-	float outerHeight = fmaxf(obj_a_bounds.X, obj_a_bounds.X) - fminf(obj_a_bounds.Y, obj_a_bounds.Y);
+	float outerHeight = fmaxf(obj_a_bounds.Y, obj_a_bounds.Y) - fminf(obj_a_bounds.X, obj_a_bounds.X);
 	float outerWidth = fmaxf(obj_a_bounds.W, obj_a_bounds.W) - fminf(obj_a_bounds.Z, obj_a_bounds.Z);
 
 	float innerWidth = fmaxf(0, outerWidth - (obj_a_bounds.W - obj_a_bounds.Z) - (obj_b_bounds.W - obj_b_bounds.Z));
-	float innerHeight = fmaxf(0, outerHeight - (obj_a_bounds.X - obj_a_bounds.Y) - (obj_b_bounds.X - obj_b_bounds.Y));
+	float innerHeight = fmaxf(0, outerHeight - (obj_a_bounds.Y - obj_a_bounds.X) - (obj_b_bounds.Y - obj_b_bounds.X));
 
 	return sqrtf((innerWidth * innerWidth) + (innerHeight * innerHeight));
 }
@@ -213,7 +213,7 @@ bool IInventoryInterface::SortItems(TArray<AMoveableObject*> itemsToSort, TArray
 	TArray<CCOA> CCOAs = TArray<CCOA>();
 	TArray<CCOA> PlacedCCOAs = TArray<CCOA>();
 	TArray<FVector> corners = TArray<FVector>();
-	float highestDegree = 0;
+	float highestDegree = -10;
 	CCOA bestCCOA = CCOA(nullptr, 0, 0, 0);
 	float returnedDegree;
 
@@ -240,7 +240,7 @@ bool IInventoryInterface::SortItems(TArray<AMoveableObject*> itemsToSort, TArray
 
 		// Remove the corresponding item from remaining
 		remainingItems.Remove(bestCCOA.object);
-		highestDegree = 0;
+		highestDegree = -10;
 		CCOAs.Empty();
 	}
 	successfulCCOAs = PlacedCCOAs; 

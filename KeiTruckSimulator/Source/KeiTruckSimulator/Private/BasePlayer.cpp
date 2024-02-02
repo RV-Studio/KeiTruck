@@ -142,6 +142,7 @@ void ABasePlayer::DisplayDialogueOptions(TArray<FString> dialogueOptions) {
 
 void ABasePlayer::CloseDialogue() {
 	HUD->CloseDialogue();
+	talkingNPC = nullptr;
 }
 
 void ABasePlayer::PickupObject(AMoveableObject* objectToHold) {

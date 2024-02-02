@@ -18,15 +18,15 @@ AInteractable::AInteractable()
 	Cube = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cube"));
 	SetRootComponent(Cube);
 
-	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
+	/*Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
 	Box->SetCollisionProfileName(FName("Pawn"));
-	Box->SetupAttachment(Cube);
+	Box->SetupAttachment(Cube);*/
 
 	
 	//Cube->SetupAttachment(Box);
 
 	Rotator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Rotator"));
-	Rotator->SetupAttachment(Box);
+	Rotator->SetupAttachment(Cube);
 	Rotator->SetRelativeLocation(FVector(0, 0, 40));
 
 	TextRenderer = CreateDefaultSubobject<UTextRenderComponent>(TEXT("TextRenderer"));

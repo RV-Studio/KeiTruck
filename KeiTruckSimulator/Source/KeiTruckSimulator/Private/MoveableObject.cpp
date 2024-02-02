@@ -5,6 +5,27 @@
 #include "BasePlayer.h"
 #include "BaseInventory.h"
 
+void AMoveableObject::BeginPlay() {
+	Super::BeginPlay();
+
+	FVector minExtents = FVector();
+	FVector maxExtents = FVector();
+
+	Cube->GetLocalBounds(minExtents, maxExtents);
+
+	maxExtents *= Cube->GetRelativeScale3D();
+
+	UnitWidth = maxExtents.X * 2;
+	UnitDepth = maxExtents.Y * 2;
+	UnitHeight = maxExtents.Z;
+
+	Corners.Add(FVector(maxExtents.X, maxExtents.Y, 0));
+	Corners.Add(FVector(maxExtents.X, -maxExtents.Y, 0));
+	Corners.Add(FVector(-maxExtents.X, maxExtents.Y, 0));
+	Corners.Add(FVector(-maxExtents.X, -maxExtents.Y, 0));
+
+}
+
 void AMoveableObject::Interact(ABasePlayer* _player) {
 	Super::Interact(_player);
 
@@ -43,6 +64,7 @@ void AMoveableObject::PlaceObject(FVector _placement, float _rotation, APawn* _c
 	DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
 	FAttachmentTransformRules attachmentRules = FAttachmentTransformRules(EAttachmentRule::SnapToTarget, EAttachmentRule::SnapToTarget, EAttachmentRule::KeepWorld, false);
 	AttachToActor(_container, attachmentRules);
+	_placement.Z = UnitHeight;
 	SetActorRelativeLocation(_placement);
 	SetActorRelativeRotation(FRotator(0, _rotation, 0));
 	SetActorEnableCollision(true);

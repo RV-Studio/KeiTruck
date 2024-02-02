@@ -32,10 +32,14 @@ public:
 		void PlaceObject(FVector placement, float rotation, APawn* _container);
 	
 protected:
+	virtual void BeginPlay() override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		int UnitWidth;
+		float UnitWidth;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		int UnitDepth;
+		float UnitDepth;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		float UnitHeight;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		TArray<FVector> Corners;

@@ -40,8 +40,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
 	class UStaticMeshComponent* Rotator;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
-	class UBoxComponent* Box;
+	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Component")
+	class UBoxComponent* Box;*/
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class ABasePlayer* player;
