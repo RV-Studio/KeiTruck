@@ -12,7 +12,7 @@ UTask_FindTurnLocation::UTask_FindTurnLocation() {
 }
 
 void UTask_FindTurnLocation::ReceiveExecuteAI(AAIController* OwnerController, APawn* ControlledPawn) {
-	currentTurnAmout += DegreesToTurn;// UBTFunctionLibrary::GetBlackboardValueAsFloat(this, TurnAmountHolderKey);
+	currentTurnAmout += DegreesToTurn;
 	FRotator MakeRotation(0, currentTurnAmout, 0);
 
 	FVector Direction = FRotationMatrix(MakeRotation).GetScaledAxis(EAxis::Y);
@@ -20,7 +20,6 @@ void UTask_FindTurnLocation::ReceiveExecuteAI(AAIController* OwnerController, AP
 
 	UBTFunctionLibrary::SetBlackboardValueAsVector(this, DestinationKey, NewDestination.Location);
 
-	//UBTFunctionLibrary::SetBlackboardValueAsFloat(this, TurnAmountHolderKey, currentTurnAmout += DegreesToTurn);
 
 	FinishExecute(true);
 

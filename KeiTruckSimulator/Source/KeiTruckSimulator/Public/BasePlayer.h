@@ -38,6 +38,14 @@ public:
 	void DisplayDialogueOptions(TArray<FString> dialogueOptions);
 
 	void CloseDialogue();
+
+	void PickupObject(class AMoveableObject* objectToHold);
+
+	bool IsHoldingObject();
+
+	void ExitVehicle();
+
+	AMoveableObject* GetHeldObject();
 	
 protected: 
 	virtual void BeginPlay() override;
@@ -61,6 +69,9 @@ protected:
 		UInputAction* ActionInteract;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
+		UInputAction* ActionDropObject;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 		UInputAction* ActionNavigateOptions;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
@@ -75,6 +86,9 @@ protected:
 		TSubclassOf<UWidgetHUD> HUDClass;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		class APlayerController* AsPlayerController;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		class UStaticMeshComponent* DropObjectLocation;
 
 	class IInteractableInterface* interactableObject;
 
@@ -91,12 +105,17 @@ protected:
 		void Interact(const FInputActionValue& value);
 
 	UFUNCTION(BlueprintCallable)
+		void DropHeldObject(const FInputActionValue& value);
+
+	UFUNCTION(BlueprintCallable)
 		void NavigateOptions(const FInputActionValue& value);
 
 	UFUNCTION(BlueprintCallable)
 		void SelectOption(const FInputActionValue& value);
 
 		ABaseNPC* talkingNPC;
+
+		class AMoveableObject* heldObject;
 
 private:
 	

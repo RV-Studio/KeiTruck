@@ -26,7 +26,7 @@ public:
 
 	virtual void SetInteractability(bool _interactability, FVector playerPos = FVector(0, 0 ,0)) = 0;
 
-	virtual void SetTargetability(bool _targetability);
+	virtual void SetTargetability(class ABasePlayer* _player = nullptr, bool _targetability = true);
 
 	virtual bool IsTargetable();
 

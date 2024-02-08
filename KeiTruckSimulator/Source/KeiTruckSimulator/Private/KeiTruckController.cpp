@@ -71,6 +71,8 @@ void AKeiTruckController::Tick(float DeltaTime) {
 void AKeiTruckController::BeginPlay() {
 	Super::BeginPlay();
 
+	SetTargetability();
+
 	ChaosWheeledVehicleMovementComponent = Cast<UChaosWheeledVehicleMovementComponent>(GetVehicleMovementComponent());
 }
 
@@ -132,13 +134,8 @@ void AKeiTruckController::ExitVehicle(const FInputActionValue& value) {
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if (PlayerController) {
 		PlayerController->Possess(player);
-
-		UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
-		if (Subsystem) {
-			Subsystem->ClearAllMappings();
-			Subsystem->AddMappingContext(BipedalMappingContext, 0);
-		}
 	}
+	player->ExitVehicle();
 	player->DetachFromActor(FDetachmentTransformRules::KeepRelativeTransform);
 	player->SetActorLocation(ExitVehiclePosition->GetComponentLocation());
 	player->SetActorEnableCollision(true);

@@ -17,18 +17,33 @@ class KEITRUCKSIMULATOR_API AMoveableObject : public AInteractable
 public:
 	virtual void Interact(ABasePlayer* _player) override;
 
+	virtual void SetTargetability(class ABasePlayer* _player = nullptr, bool _targetability = true) override;
+
 	UFUNCTION(BlueprintCallable)
 		FVector GetDimensions();
 
 	UFUNCTION(BlueprintCallable)
-		bool GetIsVertical();
+		TArray<FVector> GetCorners();
+
+	UFUNCTION(BlueprintCallable)
+		FVector4 GetMaxBounds();
+
+	UFUNCTION(BlueprintCallable)
+		void PlaceObject(FVector placement, float rotation, APawn* _container);
 	
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	int unitWidth;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	int unitDepth;
+	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	bool isVertical;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		float UnitWidth;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		float UnitDepth;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		float UnitHeight;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		TArray<FVector> Corners;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	APawn* Container;
 };

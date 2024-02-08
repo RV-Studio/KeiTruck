@@ -10,18 +10,23 @@
 // Sets default values
 AInteractable::AInteractable()
 {
+	SetTargetability();
+
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
-	Box->SetCollisionProfileName(FName("Pawn"));
-	Box->SetupAttachment(RootComponent);
-
 	Cube = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Cube"));
-	Cube->SetupAttachment(Box);
+	SetRootComponent(Cube);
+
+	/*Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
+	Box->SetCollisionProfileName(FName("Pawn"));
+	Box->SetupAttachment(Cube);*/
+
+	
+	//Cube->SetupAttachment(Box);
 
 	Rotator = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Rotator"));
-	Rotator->SetupAttachment(Box);
+	Rotator->SetupAttachment(Cube);
 	Rotator->SetRelativeLocation(FVector(0, 0, 40));
 
 	TextRenderer = CreateDefaultSubobject<UTextRenderComponent>(TEXT("TextRenderer"));
